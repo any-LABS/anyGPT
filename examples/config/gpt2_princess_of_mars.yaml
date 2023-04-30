@@ -1,0 +1,37 @@
+model_config:
+  name: 'gpt-2'
+  bias: true
+  block_size: 256 #1024
+  dropout: 0.0
+  embedding_size: 192 #768
+  num_heads: 3 #12
+  num_layers: 3 #12
+  vocab_size: 50304
+
+training_config:
+  learning_rate: 6.0e-4
+  max_iters: 100 #600000
+  weight_decay: 1.0e-1
+  beta1: 0.9
+  beta2: 0.95
+  grad_clip: 1.0
+  decay_lr: true
+  warmup_iters: 2000
+  lr_decay_iters: 600000
+  min_lr: 6.0e-5
+
+io_config:
+  dataset: 'princess_of_mars'
+  out_dir: 'results'
+  eval_interval: 2000
+  log_interval: 1
+  eval_iters: 200
+  eval_only: false # if True, script exits right after the first eval
+  always_save_checkpoint: true # if True, always save a checkpoint after each eval
+  init_from: 'scratch' # 'scratch' or 'resume' or 'gpt2*'
+
+torch_config:
+  backend: 'nccl'
+  device: 'cuda'
+  dtype: 'bfloat16'
+  compile: true
