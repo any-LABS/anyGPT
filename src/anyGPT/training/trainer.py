@@ -2,8 +2,8 @@ import lightning.pytorch as pl
 import torch
 from lightning.pytorch.callbacks import StochasticWeightAveraging
 from lightning.pytorch.loggers import TensorBoardLogger
-from pytorch_lightning.utilities.model_summary import ModelSummary
 from torch.utils.data import DataLoader, random_split
+
 from anyGPT.config.settings import AnyGPTSettings
 from anyGPT.data.next_token_dataset import NextTokenDataset
 from anyGPT.models.lightning import AnyGPTLit
@@ -35,10 +35,6 @@ class AnyGPTTrainer:
                                   val_check_interval=self.settings.training_config.val_check_interval,
                                   logger=self.logger)
 
-
     def fit(self):
         print(f"Starting to train {self.settings.model_config.name} with {self.settings.io_config.dataset} dataset.")
-        # print("Model Summary")
-        # summary = ModelSummary(self.model)
-        # print(summary)
         self.trainer.fit(self.model, train_dataloaders=self.train_dataloader, val_dataloaders=self.val_dataloader)

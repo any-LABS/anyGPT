@@ -11,6 +11,7 @@ class AnyGPTLit(pl.LightningModule):
         super().__init__()
         self.settings = settings
         self.model = AnyGPT(self.settings.model_config)
+        self.save_hyperparameters()
 
     def forward(self, *args, **kwargs):
         return self.model(*args, **kwargs)

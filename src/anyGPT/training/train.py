@@ -1,10 +1,7 @@
 import argparse
-
-import yaml
-
-from anyGPT.config.settings import AnyGPTSettings, ModelConfig
+from anyGPT.config.settings import AnyGPTSettings
 from anyGPT.config.util import get_settings
-from anyGPT.trainer.trainer import AnyGPTTrainer
+from anyGPT.training.trainer import AnyGPTTrainer
 
 
 def _create_parser() -> argparse.ArgumentParser:
