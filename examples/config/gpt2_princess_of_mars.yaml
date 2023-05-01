@@ -1,23 +1,27 @@
 model_config:
-  name: 'gpt-2'
+  name: 'gpt-2-lite'
   bias: true
-  block_size: 256 #1024
+  block_size: 512 #1024
   dropout: 0.0
-  embedding_size: 192 #768
-  num_heads: 3 #12
-  num_layers: 3 #12
+  embedding_size: 256 #768
+  num_heads: 4 #12
+  num_layers: 4 #12
   vocab_size: 50304
 
 training_config:
   learning_rate: 6.0e-4
-  max_iters: 100 #600000
+  batch_size: 8
+  accumulate_gradients: 4
+  swa_lrs: 1.0e-2
+  max_epochs: 5
+  val_check_interval: 0.25
   weight_decay: 1.0e-1
   beta1: 0.9
   beta2: 0.95
   grad_clip: 1.0
   decay_lr: true
   warmup_iters: 2000
-  lr_decay_iters: 600000
+  lr_decay_iters: 150000 #600000
   min_lr: 6.0e-5
 
 io_config:

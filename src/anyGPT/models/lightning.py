@@ -18,7 +18,13 @@ class AnyGPTLit(pl.LightningModule):
     def training_step(self, batch, batch_index):
         x, y = batch
         logits, loss = self.model(x, y)
-        self.log("train_loss", loss)
+        self.log("train/loss", loss)
+        return loss
+
+    def validation_step(self, batch, batch_index):
+        x, y = batch
+        logits, loss = self.model(x, y)
+        self.log("val/loss", loss)
         return loss
 
     def configure_optimizers(self):

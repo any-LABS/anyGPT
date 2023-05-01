@@ -20,7 +20,11 @@ class ModelConfig:
 @dataclass
 class TrainingConfig:
     learning_rate: float = 1e-4
-    max_iters: int = 600000
+    batch_size: int = 8
+    accumulate_gradients: int = 4
+    swa_lrs: float = 1.0e-2
+    max_epochs: int = 100
+    val_check_interval: float = 1.0
     weight_decay: float = 1e-1
     beta1: float = 0.9
     beta2: float = 0.95

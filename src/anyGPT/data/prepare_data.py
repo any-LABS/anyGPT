@@ -36,12 +36,12 @@ def _download_data(name, url):
             f.write(requests.get(url).text)
 
 
-def _save_to_bin(name, train_ids, val_ids):
+def _save_to_bin(name, train_ids, test_ids):
     dir_name = _make_dir(os.path.join(DEFAULT_DATADIR, name))
     train_ids = np.array(train_ids, dtype=np.uint16)
-    val_ids = np.array(val_ids, dtype=np.uint16)
+    test_ids = np.array(test_ids, dtype=np.uint16)
     train_ids.tofile(os.path.join(dir_name, 'train.bin'))
-    val_ids.tofile(os.path.join(dir_name, 'val.bin'))
+    test_ids.tofile(os.path.join(dir_name, 'test.bin'))
 
 
 def _tokenize_data(name, bpe):
@@ -50,15 +50,15 @@ def _tokenize_data(name, bpe):
         data = f.read()
     n = len(data)
     train_data = data[:int(n * 0.9)]
-    val_data = data[int(n * 0.9):]
+    test_data = data[int(n * 0.9):]
 
     enc = tiktoken.get_encoding(bpe)
     train_ids = enc.encode_ordinary(train_data)
-    val_ids = enc.encode_ordinary(val_data)
+    test_ids = enc.encode_ordinary(test_data)
     print(f"Training set has {len(train_ids):,} tokens")
-    print(f"Validation set has {len(val_ids):,} tokens")
+    print(f"Test set has {len(test_ids):,} tokens")
 
-    _save_to_bin(name, train_ids, val_ids)
+    _save_to_bin(name, train_ids, test_ids)
 
 
 def prepare_data(name: str, url: str) -> None:
