@@ -89,8 +89,21 @@ class TxBlock(nn.Module):
         self.attention = CausalSelfAttention(config)
         self.ln_2 = LayerNorm(config)
         self.mlp = MLP(config)
+        if config.move_layer_norm:
+            self._forward = self._pre_layer_norm
+        else:
+            self._forward = self._post_layer_norm
 
     def forward(self, x):
+        x = self._forward(x)
+        return x
+
+    def _pre_layer_norm(self, x):
         x = x + self.attention(self.ln_1(x))
         x = x + self.mlp(self.ln_2(x))
+        return x
+
+    def _post_layer_norm(self, x):
+        x = self.ln_1(x + self.attention(x))
+        x = self.ln_2(x + self.mlp(x))
         return x

@@ -25,8 +25,9 @@ class AnyGPT(nn.Module):
             wpe=nn.Embedding(config.block_size, config.embedding_size),
             drop=nn.Dropout(config.dropout),
             h=nn.ModuleList([TxBlock(config) for _ in range(config.num_layers)]),
-            ln_f=LayerNorm(config)
         ))
+        if config.move_layer_norm:
+            self.transformer.update(dict(ln_f=LayerNorm(config)))
 
         self.lm_head = nn.Linear(config.embedding_size, config.vocab_size, bias=False)
         self.transformer.wte.weight = self.lm_head.weight
@@ -48,7 +49,8 @@ class AnyGPT(nn.Module):
         for block in self.transformer.h:
             x = block(x)
 
-        x = self.transformer.ln_f(x)
+        if self.config.move_layer_norm:
+            x = self.transformer.ln_f(x)
 
         if targets is not None:
             logits = self.lm_head(x)

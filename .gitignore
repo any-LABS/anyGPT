@@ -1,5 +1,6 @@
 .idea
 lightning_logs/
+results/
 scratch.py
 
 # Byte-compiled / optimized / DLL files

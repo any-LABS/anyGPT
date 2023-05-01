@@ -1,0 +1,14 @@
+model_config:
+  name: 'gpt-1-16M'
+  block_size: 512
+  dropout: 0.1
+  embedding_size: 256
+  num_heads: 4
+  num_layers: 4
+
+training_config:
+  learning_rate: 2.5e-4
+  max_epochs: 5
+
+io_config:
+  experiment_name: 'gpt-1'
