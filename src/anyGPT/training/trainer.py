@@ -17,23 +17,27 @@ class AnyGPTTrainer:
             self.model = torch.compile(AnyGPTLit(self.settings))
         else:
             self.model = AnyGPTLit(self.settings)
-        self.dataset = NextTokenDataset(self.settings.io_config.dataset, self.settings.model_config.block_size)
-        self.train_set_size = int(len(self.dataset) * 0.8)
-        self.val_set_size = len(self.dataset) - self.train_set_size
-        seed = torch.Generator().manual_seed(42)
-        self.train_set, self.val_set = random_split(self.dataset, [self.train_set_size, self.val_set_size],
-                                                    generator=seed)
+        self.train_set = NextTokenDataset(self.settings.io_config.dataset, 'train',
+                                          self.settings.model_config.block_size)
+        self.val_set = NextTokenDataset(self.settings.io_config.dataset, 'val', self.settings.model_config.block_size)
         self.train_dataloader = DataLoader(self.train_set, batch_size=self.settings.training_config.batch_size,
                                            num_workers=12, shuffle=True)
         self.val_dataloader = DataLoader(self.val_set, batch_size=self.settings.training_config.batch_size,
                                          num_workers=12)
         self.logger = TensorBoardLogger(self.settings.io_config.out_dir, self.settings.io_config.experiment_name)
-        self.trainer = pl.Trainer(max_epochs=self.settings.training_config.max_epochs,
+        self.trainer = pl.Trainer(max_steps=self.settings.training_config.max_steps,
                                   gradient_clip_val=self.settings.training_config.grad_clip,
                                   accumulate_grad_batches=self.settings.training_config.accumulate_gradients,
                                   callbacks=[StochasticWeightAveraging(swa_lrs=self.settings.training_config.swa_lrs)],
                                   val_check_interval=self.settings.training_config.val_check_interval,
-                                  logger=self.logger)
+                                  logger=self.logger,
+                                  enable_checkpointing=self.settings.io_config.enable_checkpointing,
+                                  num_sanity_val_steps=0,
+                                  log_every_n_steps=self.settings.io_config.log_every_n_steps,
+                                  limit_train_batches=self.settings.training_config.limit_train_batches,
+                                  limit_val_batches=self.settings.training_config.limit_val_batches,
+                                  limit_test_batches=self.settings.training_config.limit_test_batches
+                                  )
 
     def fit(self):
         print(f"Starting to train {self.settings.model_config.name} with {self.settings.io_config.dataset} dataset.")

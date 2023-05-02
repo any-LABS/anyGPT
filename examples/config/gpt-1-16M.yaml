@@ -1,14 +1,20 @@
 model_config:
   name: 'gpt-1-16M'
-  block_size: 512
-  dropout: 0.1
-  embedding_size: 256
+  block_size: 64
+  dropout: 0.2
+  embedding_size: 128
   num_heads: 4
   num_layers: 4
+  move_layer_norm: false
 
 training_config:
-  learning_rate: 2.5e-4
-  max_epochs: 5
+  learning_rate: 1.0e-3
+  beta2: 0.99
+  min_lr: 1.0e-4
+  max_steps: 2000
+  val_check_interval: 100
+  limit_val_batches: 50
 
 io_config:
   experiment_name: 'gpt-1'
+  dataset: 'shakespeare_complete'

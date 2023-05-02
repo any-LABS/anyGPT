@@ -17,8 +17,8 @@ class ModelConfig(SimpleConfig):
     num_layers: int = 12
     num_heads: int = 12
     embedding_size: int = 768
-    dropout: float = 0.0
-    bias: bool = True  # True: bias in Linears and LayerNorms, like GPT-2. False: a bit better and faster
+    dropout: float = 0.2
+    bias: bool = True
     move_layer_norm: bool = True
 
 
@@ -26,18 +26,21 @@ class ModelConfig(SimpleConfig):
 class TrainingConfig(SimpleConfig):
     learning_rate: float = 1e-4
     batch_size: int = 8
-    accumulate_gradients: int = 4
+    accumulate_gradients: int = 8
     swa_lrs: float = 1.0e-2
-    max_epochs: int = 100
-    val_check_interval: float = 0.25
+    max_steps: int = 5000
+    limit_train_batches: int = 1.0
+    limit_val_batches: int = 1.0
+    limit_test_batches: int = 1.0
+    val_check_interval: float = 100
     weight_decay: float = 1e-1
     beta1: float = 0.9
     beta2: float = 0.95
     grad_clip: float = 1.0
     decay_lr: bool = True
-    warmup_iters: int = 2000
-    lr_decay_iters: int = 600000
+    warmup_iters: int = 100
     min_lr: float = 6e-5
+    init_from: str = 'scratch'
 
 
 @dataclass
@@ -45,12 +48,8 @@ class IOConfig(SimpleConfig):
     dataset: str = 'princess_of_mars'
     out_dir: str = 'results'
     experiment_name: str = 'gpt-2-124M'
-    eval_interval: int = 2000
-    log_interval: int = 1
-    eval_iters: int = 200
-    eval_only: bool = False
-    always_save_checkpoint: bool = True
-    init_from: str = 'scratch'
+    log_every_n_steps: int = 10
+    enable_checkpointing: bool = True
 
 
 @dataclass

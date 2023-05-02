@@ -20,6 +20,7 @@ def main():
     parser = _create_parser()
     args = parser.parse_args()
     runner = AnyGPTRunner(args.model)
+    print("\nOutput:")
     print(runner.sample(args.input))
 
 

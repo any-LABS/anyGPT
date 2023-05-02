@@ -1,3 +1,7 @@
+import argparse
+import functools
+from dataclasses import dataclass
+
 import yaml
 
 from anyGPT.config.settings import AnyGPTSettings
@@ -30,3 +34,34 @@ def get_settings(config_file: str) -> AnyGPTSettings:
     parsed_config = parse_config(config_file)
     any_gpt_settings = config_to_settings(parsed_config)
     return any_gpt_settings
+
+
+def _create_parser(config_cls: dataclass) -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        prog='anyGPT trainer',
+        description='Trains anyGPT.',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+    parser.add_argument('trainer_config_path', action='store', help="The path to the training config file.")
+
+    for keys in config_cls.__annotations__.keys():
+        # TODO add automatic arguments based on 1-level nested config dataclasses
+        pass
+
+    return parser
+
+
+def anyfig(config_cls):
+    parser = _create_parser(config_cls)
+    arguments = parser.parse_args()
+    settings = get_settings(arguments.trainer_config_path)
+
+    def anyfig_decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            value = func(settings, *args, **kwargs)
+            return value
+
+        return wrapper
+
+    return anyfig_decorator

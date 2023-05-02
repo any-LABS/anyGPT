@@ -6,8 +6,8 @@ from anyGPT.data.prepare_data import DEFAULT_DATADIR
 
 
 class NextTokenDataset(Dataset):
-    def __init__(self, dataset_name, block_size):
-        self.data_file = os.path.join(DEFAULT_DATADIR, dataset_name, 'train.bin')
+    def __init__(self, dataset_name, type, block_size):
+        self.data_file = os.path.join(DEFAULT_DATADIR, dataset_name, f'{type}.bin')
         self.data = np.memmap(self.data_file, dtype=np.uint16, mode='r')
         self.block_size = block_size
 

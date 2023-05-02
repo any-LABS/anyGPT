@@ -7,12 +7,12 @@ from anyGPT.models.lightning import AnyGPTLit
 
 class AnyGPTRunner:
     def __init__(self, checkpoint_path):
-        self.model = AnyGPTLit.load_from_checkpoint(checkpoint_path)
+        self.model = AnyGPTLit.load_from_checkpoint(checkpoint_path).eval()
         self.encoder = tiktoken.get_encoding('gpt2')
         self.encode = lambda s: self.encoder.encode(s, allowed_special={"<|endoftext|>"})
         self.decode = lambda l: self.encoder.decode(l)
 
-    def sample(self, x, max_new_tokens: int = 10, temperature: float = 0.7, top_k=200):
+    def sample(self, x, max_new_tokens: int = 256, temperature: float = 0.8, top_k=200):
         start_ids = self.encode(x)
         y = (torch.tensor(start_ids, dtype=torch.long, device=self.model.device)[None, ...])
         block_size = self.model.settings.model_config.block_size
