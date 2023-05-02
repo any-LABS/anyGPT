@@ -1,0 +1,11 @@
+model_config:
+  name: 'gpt-3'
+  block_size: 2048
+  embedding_size: 12888
+  num_heads: 96
+  num_layers: 96
+
+training_config:
+  learning_rate: 10.0e-8
+  batch_size: 512
+  min_lr: 10.0e-9

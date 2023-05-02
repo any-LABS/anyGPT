@@ -1,5 +1,5 @@
 model_config:
-  name: 'gpt-2-16M'
+  name: 'gpt-2-30M'
   block_size: 256
   dropout: 0.2
   embedding_size: 384
@@ -8,6 +8,8 @@ model_config:
 
 training_config:
   learning_rate: 1.0e-3
+  batch_size: 8
+  accumulate_gradients: 8
   beta2: 0.99
   min_lr: 1.0e-4
   max_steps: 5000

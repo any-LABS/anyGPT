@@ -1,7 +1,7 @@
 model_config:
   name: 'gpt-1-16M'
   block_size: 64
-  dropout: 0.2
+  dropout: 0.0
   embedding_size: 128
   num_heads: 4
   num_layers: 4
@@ -9,6 +9,8 @@ model_config:
 
 training_config:
   learning_rate: 1.0e-3
+  batch_size: 4
+  accumulate_gradients: 3
   beta2: 0.99
   min_lr: 1.0e-4
   max_steps: 2000

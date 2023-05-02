@@ -1,0 +1,13 @@
+model_config:
+  name: 'gpt-1'
+  block_size: 512
+  embedding_size: 768
+  num_heads: 12
+  num_layers: 12
+  vocab_size: 40000
+  move_layer_norm: false
+
+training_config:
+  batch_size: 256
+  learning_rate: 2.5e-4
+  min_lr: 2.5e-5

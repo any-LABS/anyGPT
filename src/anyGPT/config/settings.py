@@ -45,9 +45,9 @@ class TrainingConfig(SimpleConfig):
 
 @dataclass
 class IOConfig(SimpleConfig):
-    dataset: str = 'princess_of_mars'
+    dataset: str = 'shakespeare_complete'
     out_dir: str = 'results'
-    experiment_name: str = 'gpt-2-124M'
+    experiment_name: str = 'anygpt'
     log_every_n_steps: int = 10
     enable_checkpointing: bool = True
 
