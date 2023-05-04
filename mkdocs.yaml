@@ -1,0 +1,13 @@
+site_name: anyGPT
+repo_url: https://github.com/miguelalonsojr/anyGPT
+edit_uri: edit/main/docs
+site_description: anyGPT is a general purpose library for training any type of GPT model.
+site_author: Miguel Alonso Jr
+copyright: copyright © 2023 Miguel Alonso Jr.
+nav:
+  - Home: index.md
+theme:
+  name: material
+markdown_extensions:
+  - markdown_include.include:
+      base_path: docs

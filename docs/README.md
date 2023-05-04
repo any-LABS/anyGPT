@@ -72,7 +72,7 @@ anygpt-prepare-data -n shakespeare_complete -u https://www.gutenberg.org/cache/e
 
 ### Training
 
-Create a config file. In this example, I'll call it `gpt-2-30M.yaml`. You can also check out the [examples](examples).
+Create a config file. In this example, I'll call it `gpt-2-30M.yaml`. You can also check out the [examples](../examples).
 
 ```yaml
 model_config:
@@ -126,4 +126,4 @@ TBD
 The goal of this project is to enable organizations, both large and small, to train and use GPT style
 Large Language Models. I believe the future is open-source, with people and organizations being able to
 train from scratch or fine-tune models and deploy to production without relying on gatekeepers. So I'm releasing this
-under an [MIT license](LICENSE) for the benefit of all and in the hope that the community will find it useful.
+under an [MIT license](../LICENSE) for the benefit of all and in the hope that the community will find it useful.
