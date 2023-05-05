@@ -23,7 +23,7 @@ or [poetry](https://python-poetry.org/). Eventually, I will have support for eas
 To install anyGPT:
 
 ```shell
-pip install anyGPT
+$ pip install anyGPT
 ```
 
 ### Dependencies
@@ -67,14 +67,14 @@ pip install anyGPT
 ### Data Preparation
 
 ```shell
-anygpt-prepare-data -n shakespeare_complete -u https://www.gutenberg.org/cache/epub/100/pg100.txt
+$ anygpt-prepare-data -n shakespeare_complete -u https://www.gutenberg.org/cache/epub/100/pg100.txt
 ```
 
 ### Training
 
-Create a config file. In this example, I'll call it `gpt-2-30M.yaml`. You can also check out the [examples](../examples).
+Create a config file. In this example, I'll call it `gpt-2-30M.yaml`. You can also check out the [example configuration files][example-configs].
 
-```yaml
+```yaml title="gpt-2-30M.yaml"
 model_config:
   name: 'gpt-2-30M'
   block_size: 256
@@ -99,13 +99,13 @@ io_config:
 ```
 
 ```shell
-anygpt-train gpt-2-30M.yaml
+$ anygpt-train gpt-2-30M.yaml
 ```
 
 ### Inference
 
 ```shell
-anygpt-run results/gpt-1/version_0/checkpoints/epoch=0-step=5000.ckpt \
+$ anygpt-run results/gpt-1/version_0/checkpoints/epoch=0-step=5000.ckpt \
 "JAQUES.
 All the world’s a stage,
 And all the men and women merely players;
@@ -127,3 +127,6 @@ The goal of this project is to enable organizations, both large and small, to tr
 Large Language Models. I believe the future is open-source, with people and organizations being able to
 train from scratch or fine-tune models and deploy to production without relying on gatekeepers. So I'm releasing this
 under an [MIT license](../LICENSE) for the benefit of all and in the hope that the community will find it useful.
+
+[github_url]: https://github.com/miguelalonsojr/anyGPT/tree/main
+[example-configs]: https://github.com/miguelalonsojr/anyGPT/tree/main/examples/config "Example configuration files."
