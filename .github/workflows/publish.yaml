@@ -26,7 +26,7 @@ jobs:
   build-test-publish-prd:
     runs-on: ubuntu-latest
     environment: prod
-    needs: lint
+    needs: [lint, build-test-publish-test]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
