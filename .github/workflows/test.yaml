@@ -3,8 +3,11 @@ name: Build and Test
 on: [pull_request]
 
 jobs:
+  lint:
+    uses: ./.github/workflows/lint.yaml
   build-n-test:
     runs-on: ubuntu-latest
+    needs: lint
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
