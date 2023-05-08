@@ -12,7 +12,7 @@ model_config:
 def test_model_config():
     config = parse_config(model_config_file)
     settings = config_to_settings(config)
-    assert settings.model_config.name == 'hello-gpt'
+    assert settings.model_config.name == "hello-gpt"
     assert settings.model_config.num_layers == 3
     assert settings.model_config.num_heads == 3
 
@@ -41,8 +41,8 @@ io_config:
 def test_io_config():
     config = parse_config(io_config_file)
     settings = config_to_settings(config)
-    assert settings.io_config.dataset == 'the_meaning_of_life'
-    assert settings.io_config.experiment_name == 'is 42'
+    assert settings.io_config.dataset == "the_meaning_of_life"
+    assert settings.io_config.experiment_name == "is 42"
 
 
 torch_config_file = """
@@ -54,7 +54,7 @@ torch_config:
 def test_torch_config():
     config = parse_config(torch_config_file)
     settings = config_to_settings(config)
-    assert settings.torch_config.backend == 'cpu'
+    assert settings.torch_config.backend == "cpu"
 
 
 full_config_file = """
@@ -87,4 +87,4 @@ def test_full_config():
     settings = config_to_settings(config)
     assert settings.model_config.block_size == 256
     assert settings.training_config.batch_size == 8
-    assert settings.io_config.experiment_name == 'gpt-2'
+    assert settings.io_config.experiment_name == "gpt-2"

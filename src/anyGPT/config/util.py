@@ -8,7 +8,7 @@ from anyGPT.config.settings import AnyGPTSettings
 
 
 def read_config(filename):
-    with open(filename, 'r') as f:
+    with open(filename, "r") as f:
         return f.read()
 
 
@@ -38,11 +38,15 @@ def get_settings(config_file: str) -> AnyGPTSettings:
 
 def _create_parser(config_cls: dataclass) -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog='anyGPT trainer',
-        description='Trains anyGPT.',
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+        prog="anyGPT trainer",
+        description="Trains anyGPT.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    parser.add_argument('trainer_config_path', action='store', help="The path to the training config file.")
+    parser.add_argument(
+        "trainer_config_path",
+        action="store",
+        help="The path to the training config file.",
+    )
 
     for keys in config_cls.__annotations__.keys():
         # TODO add automatic arguments based on 1-level nested config dataclasses
