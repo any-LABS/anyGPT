@@ -1,5 +1,7 @@
 # anyGPT
 
+[![Build and Test](https://github.com/miguelalonsojr/anyGPT/actions/workflows/test.yaml/badge.svg)](https://github.com/miguelalonsojr/anyGPT/actions/workflows/test.yaml)
+
 anyGPT is a general purpose library for training any type of GPT model. Support for gpt-1, gpt-2, and gpt-3 models.
 Inspired by [nanoGPT](https://github.com/karpathy/nanoGPT) by [Andrej Karpathy](https://github.com/karpathy), the goal
 of this project is to provide tools for the training and usage of GPT style large language models. The aim is to provide
