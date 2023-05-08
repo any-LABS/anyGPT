@@ -1,0 +1,26 @@
+name: Publish to Test
+
+on:
+  release:
+    types: [created]
+  workflow_dispatch:
+
+jobs:
+  lint:
+    uses: ./.github/workflows/lint.yaml
+  build-test-publish-test:
+    runs-on: ubuntu-latest
+    environment: test
+    needs: lint
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: setup.cfg
+      - run: pip install .[dev]
+      - run: pytest
+      - run: python -m build
+      - run: twine check dist/*
+      - run: twine upload -r testpypi dist/* -u __token__ -p ${{ secrets.PYPITEST }}
