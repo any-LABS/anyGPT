@@ -20,12 +20,14 @@ class AnyGPT(nn.Module):
         super().__init__()
         self.config = config
 
-        self.transformer = nn.ModuleDict(dict(
-            wte=nn.Embedding(config.vocab_size, config.embedding_size),
-            wpe=nn.Embedding(config.block_size, config.embedding_size),
-            drop=nn.Dropout(config.dropout),
-            h=nn.ModuleList([TxBlock(config) for _ in range(config.num_layers)]),
-        ))
+        self.transformer = nn.ModuleDict(
+            dict(
+                wte=nn.Embedding(config.vocab_size, config.embedding_size),
+                wpe=nn.Embedding(config.block_size, config.embedding_size),
+                drop=nn.Dropout(config.dropout),
+                h=nn.ModuleList([TxBlock(config) for _ in range(config.num_layers)]),
+            )
+        )
         if config.move_layer_norm:
             self.transformer.update(dict(ln_f=LayerNorm(config)))
 
@@ -38,8 +40,10 @@ class AnyGPT(nn.Module):
         device = idx.device
         # b: batch size, t: sequence length
         b, t = idx.size()
-        assert t <= self.config.block_size, f"Cannot forward sequence of length {t}, block size is only " \
-                                            f"{self.config.block_size}"
+        assert t <= self.config.block_size, (
+            f"Cannot forward sequence of length {t}, block size is only "
+            f"{self.config.block_size}"
+        )
         pos = torch.arange(0, t, dtype=torch.long, device=device).unsqueeze(0)
 
         token_embedding = self.transformer.wte(idx)
@@ -54,7 +58,9 @@ class AnyGPT(nn.Module):
 
         if targets is not None:
             logits = self.lm_head(x)
-            loss = F.cross_entropy(logits.view(-1, logits.size(-1)), targets.view(-1), ignore_index=-1)
+            loss = F.cross_entropy(
+                logits.view(-1, logits.size(-1)), targets.view(-1), ignore_index=-1
+            )
         else:
             logits = self.lm_head(x[:, [-1], :])
             loss = None

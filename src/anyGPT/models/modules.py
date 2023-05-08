@@ -12,7 +12,9 @@ class LayerNorm(nn.Module):
     def __init__(self, config: ModelConfig):
         super().__init__()
         self.weight = nn.Parameter(torch.ones(config.embedding_size))
-        self.bias = nn.Parameter(torch.zeros(config.embedding_size)) if config.bias else None
+        self.bias = (
+            nn.Parameter(torch.zeros(config.embedding_size)) if config.bias else None
+        )
 
     def forward(self, x):
         return F.layer_norm(x, self.weight.shape, self.weight, self.bias, 1e-5)
@@ -24,10 +26,14 @@ class CausalSelfAttention(nn.Module):
         assert config.embedding_size % config.num_heads == 0
 
         # query, key, value projections for all head, in a batch
-        self.c_attn = nn.Linear(config.embedding_size, 3 * config.embedding_size, bias=config.bias)
+        self.c_attn = nn.Linear(
+            config.embedding_size, 3 * config.embedding_size, bias=config.bias
+        )
 
         # output projection
-        self.c_proj = nn.Linear(config.embedding_size, config.embedding_size, bias=config.bias)
+        self.c_proj = nn.Linear(
+            config.embedding_size, config.embedding_size, bias=config.bias
+        )
 
         # regularization
         self.attn_dropout = nn.Dropout(config.dropout)
@@ -37,11 +43,17 @@ class CausalSelfAttention(nn.Module):
         self.dropout = config.dropout
 
         # use flash attention!!! yay
-        self.flash = hasattr(torch.nn.functional, 'scaled_dot_product_attention')
+        self.flash = hasattr(torch.nn.functional, "scaled_dot_product_attention")
         if not self.flash:
-            print("Yo yo! anyGPT will use slow attention. Flash attention requires PyTorch >= 2.0")
-            self.register_buffer("bias", torch.tril(torch.ones(config.block_size, config.block_size))
-                                 .view(1, 1, config.block_size, config.block_size))
+            print(
+                "Yo yo! anyGPT will use slow attention. Flash attention requires PyTorch >= 2.0"
+            )
+            self.register_buffer(
+                "bias",
+                torch.tril(torch.ones(config.block_size, config.block_size)).view(
+                    1, 1, config.block_size, config.block_size
+                ),
+            )
 
     def forward(self, x):
         # B: batch size, T: sequence length, C: embedding size
@@ -51,11 +63,17 @@ class CausalSelfAttention(nn.Module):
         q, k, v = self.c_attn(x).split(self.embedding_size, dim=2)
 
         if self.flash:
-            y = F.scaled_dot_product_attention(q, k, v, attn_mask=None, dropout_p=self.dropout if self.training else 0,
-                                               is_causal=True)
+            y = F.scaled_dot_product_attention(
+                q,
+                k,
+                v,
+                attn_mask=None,
+                dropout_p=self.dropout if self.training else 0,
+                is_causal=True,
+            )
         else:
             att = (q @ k.transpose(-2, -1)) * (1.0 / math.sqrt(k.size(-1)))
-            att = att.masked_fill(self.bias[:, :, :T, :T] == 0, float('-inf'))
+            att = att.masked_fill(self.bias[:, :, :T, :T] == 0, float("-inf"))
             att = F.softmax(att, dim=-1)
             att = self.attn_dropout(att)
             y = att @ v  # (B, nh, T, T) x (B, nh, T, hs) -> (B, nh, T, hs)
@@ -70,8 +88,12 @@ class CausalSelfAttention(nn.Module):
 class MLP(nn.Module):
     def __init__(self, config: ModelConfig):
         super().__init__()
-        self.c_fc = nn.Linear(config.embedding_size, 4 * config.embedding_size, bias=config.bias)
-        self.c_proj = nn.Linear(4 * config.embedding_size, config.embedding_size, bias=config.bias)
+        self.c_fc = nn.Linear(
+            config.embedding_size, 4 * config.embedding_size, bias=config.bias
+        )
+        self.c_proj = nn.Linear(
+            4 * config.embedding_size, config.embedding_size, bias=config.bias
+        )
         self.dropout = nn.Dropout(config.dropout)
 
     def forward(self, x):

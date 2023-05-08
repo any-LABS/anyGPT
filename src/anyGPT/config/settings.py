@@ -11,7 +11,7 @@ class SimpleConfig:
 
 @dataclass
 class ModelConfig(SimpleConfig):
-    name: str = 'gpt-2-124M'
+    name: str = "gpt-2-124M"
     block_size: int = 1024
     vocab_size: int = 50304
     num_layers: int = 12
@@ -40,23 +40,23 @@ class TrainingConfig(SimpleConfig):
     decay_lr: bool = True
     warmup_iters: int = 100
     min_lr: float = 6e-5
-    init_from: str = 'scratch'
+    init_from: str = "scratch"
 
 
 @dataclass
 class IOConfig(SimpleConfig):
-    dataset: str = 'shakespeare_complete'
-    out_dir: str = 'results'
-    experiment_name: str = 'anygpt'
+    dataset: str = "shakespeare_complete"
+    out_dir: str = "results"
+    experiment_name: str = "anygpt"
     log_every_n_steps: int = 10
     enable_checkpointing: bool = True
 
 
 @dataclass
 class TorchConfig(SimpleConfig):
-    backend: str = 'nccl'
-    device: str = 'cuda'
-    dtype: str = 'bfloat16'
+    backend: str = "nccl"
+    device: str = "cuda"
+    dtype: str = "bfloat16"
     compile: bool = True
 
 
