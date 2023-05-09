@@ -1,0 +1,22 @@
+name: 'Setup Dependencies'
+description: 'Checkout code and initialize python dependencies'
+inputs:
+  python-version:
+    description: 'Python version number to use when installing dependencies'
+    required: false
+    default: '3.10'
+  extras:
+    description: 'Extra requires keys'
+    required: false
+    default: '[dev]'
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-python@v4
+      with:
+        python-version: ${{ inputs.python-version }}
+        cache: 'pip'
+    - run: python util/gen_req.py .${{ inputs.extras }} > requirements.txt
+      shell: bash
+    - run: pip install -r requirements.txt
+      shell: bash
