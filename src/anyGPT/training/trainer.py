@@ -2,7 +2,7 @@ import lightning.pytorch as pl
 import torch
 from lightning.pytorch.callbacks import StochasticWeightAveraging
 from lightning.pytorch.loggers import TensorBoardLogger
-from torch.utils.data import DataLoader, random_split
+from torch.utils.data import DataLoader
 
 from anyGPT.config.settings import AnyGPTSettings
 from anyGPT.data.next_token_dataset import NextTokenDataset
@@ -13,6 +13,7 @@ class AnyGPTTrainer:
     def __init__(self, settings: AnyGPTSettings):
         super().__init__()
         self.settings = settings
+        pl.seed_everything(self.settings.training_config.seed)
         if self.settings.torch_config.compile:
             self.model = torch.compile(AnyGPTLit(self.settings))
         else:
@@ -37,6 +38,7 @@ class AnyGPTTrainer:
             self.val_set,
             batch_size=self.settings.training_config.batch_size,
             num_workers=12,
+            shuffle=True,
         )
         self.logger = TensorBoardLogger(
             self.settings.io_config.out_dir, self.settings.io_config.experiment_name
@@ -56,6 +58,7 @@ class AnyGPTTrainer:
             limit_train_batches=self.settings.training_config.limit_train_batches,
             limit_val_batches=self.settings.training_config.limit_val_batches,
             limit_test_batches=self.settings.training_config.limit_test_batches,
+            precision=self.settings.torch_config.precision,
         )
 
     def fit(self):

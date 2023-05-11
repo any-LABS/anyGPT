@@ -15,6 +15,6 @@ class NextTokenDataset(Dataset):
         return len(self.data) - self.block_size - 1
 
     def __getitem__(self, index):
-        x = self.data[index : (index + self.block_size)].astype(np.int64)
-        y = self.data[(index + 1) : (index + self.block_size + 1)].astype(np.int64)
+        x = self.data[index : index + self.block_size].astype(np.int64)
+        y = self.data[index + 1 : index + self.block_size + 1].astype(np.int64)
         return x, y

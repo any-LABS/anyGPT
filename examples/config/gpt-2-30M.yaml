@@ -5,17 +5,19 @@ model_config:
   embedding_size: 384
   num_heads: 6
   num_layers: 6
+  bias: false
 
 training_config:
   learning_rate: 1.0e-3
-  batch_size: 8
+  swa_lrs: 1.0e-4
+  batch_size: 16
   accumulate_gradients: 8
   beta2: 0.99
   min_lr: 1.0e-4
-  max_steps: 5000
+  max_steps: 10000
   val_check_interval: 200
   limit_val_batches: 100
 
 io_config:
   experiment_name: 'gpt-2'
-  dataset: 'shakespeare_complete'
+  dataset: 'shakespeare_karpathy'

@@ -19,4 +19,4 @@ training_config:
 
 io_config:
   experiment_name: 'gpt-1'
-  dataset: 'shakespeare_complete'
+  dataset: 'shakespeare_karpathy'

@@ -24,10 +24,10 @@ class ModelConfig(SimpleConfig):
 
 @dataclass
 class TrainingConfig(SimpleConfig):
-    learning_rate: float = 1e-4
+    learning_rate: float = 6e-4
     batch_size: int = 8
     accumulate_gradients: int = 8
-    swa_lrs: float = 1.0e-2
+    swa_lrs: float = 6e-3
     max_steps: int = 5000
     limit_train_batches: int = 1.0
     limit_val_batches: int = 1.0
@@ -41,11 +41,12 @@ class TrainingConfig(SimpleConfig):
     warmup_iters: int = 100
     min_lr: float = 6e-5
     init_from: str = "scratch"
+    seed: int = 42
 
 
 @dataclass
 class IOConfig(SimpleConfig):
-    dataset: str = "shakespeare_complete"
+    dataset: str = "shakespeare_karpathy"
     out_dir: str = "results"
     experiment_name: str = "anygpt"
     log_every_n_steps: int = 10
@@ -56,7 +57,7 @@ class IOConfig(SimpleConfig):
 class TorchConfig(SimpleConfig):
     backend: str = "nccl"
     device: str = "cuda"
-    dtype: str = "bfloat16"
+    precision: str = "16-mixed"  # 32, 16-mixed, bf16-mixed, 64
     compile: bool = True
 
 

@@ -1,6 +1,7 @@
 import lightning.pytorch as pl
 import torch.optim
 from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts
+import inspect
 
 from anyGPT.config.settings import AnyGPTSettings
 from anyGPT.models.architectures import AnyGPT
@@ -72,22 +73,30 @@ class AnyGPTLit(pl.LightningModule):
             optim_groups = [
                 {
                     "params": [param_dict[pn] for pn in sorted(list(decay))],
+                    "initial_lr": self.settings.training_config.learning_rate,
                     "weight_decay": self.settings.training_config.weight_decay,
                 },
                 {
                     "params": [param_dict[pn] for pn in sorted(list(no_decay))],
+                    "initial_lr": self.settings.training_config.learning_rate,
                     "weight_decay": 0.0,
                 },
             ]
         else:
-            optim_groups = []
+            optim_groups = self.parameters()
 
-        optimizer = torch.optim.AdamW(optim_groups, lr=learning_rate, betas=betas)
+        fused_available = "fused" in inspect.signature(torch.optim.AdamW).parameters
+        use_fused = fused_available and self.device == "cuda"
+        extra_args = dict(fused=True) if use_fused else dict()
+        optimizer = torch.optim.AdamW(
+            optim_groups, lr=learning_rate, betas=betas, **extra_args
+        )
         if self.settings.training_config.decay_lr:
             scheduler = CosineAnnealingWarmRestarts(
                 optimizer,
                 T_0=self.settings.training_config.warmup_iters,
                 eta_min=self.settings.training_config.min_lr,
+                last_epoch=self.settings.training_config.max_steps,
             )
             return [optimizer], [scheduler]
         else:

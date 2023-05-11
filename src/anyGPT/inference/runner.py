@@ -2,19 +2,29 @@ import tiktoken
 import torch
 import torch.nn.functional as F
 
+from anyGPT.data.util import load_metadata
 from anyGPT.models.lightning import AnyGPTLit
 
 
 class AnyGPTRunner:
     def __init__(self, checkpoint_path):
         self.model = AnyGPTLit.load_from_checkpoint(checkpoint_path).eval()
-        self.encoder = tiktoken.get_encoding("gpt2")
-        self.encode = lambda s: self.encoder.encode(
-            s, allowed_special={"<|endoftext|>"}
-        )
-        self.decode = lambda l: self.encoder.decode(l)
+        self.encode, self.decode = self._create_enc_dec()
 
-    def sample(self, x, max_new_tokens: int = 256, temperature: float = 0.8, top_k=200):
+    def _create_enc_dec(self):
+        dataset = self.model.settings.io_config.dataset
+        meta = load_metadata(dataset)
+        if meta is None:
+            encoder = tiktoken.get_encoding("gpt2")
+            encode = lambda s: encoder.encode(s, allowed_special={"<|endoftext|>"})
+            decode = lambda l: encoder.decode(l)
+        else:
+            str_to_int, int_to_str = meta["str_to_int"], meta["int_to_str"]
+            encode = lambda s: [str_to_int[c] for c in s]
+            decode = lambda l: "".join([int_to_str[i] for i in l])
+        return encode, decode
+
+    def sample(self, x, max_new_tokens: int = 500, temperature: float = 0.8, top_k=200):
         start_ids = self.encode(x)
         y = torch.tensor(start_ids, dtype=torch.long, device=self.model.device)[
             None, ...
