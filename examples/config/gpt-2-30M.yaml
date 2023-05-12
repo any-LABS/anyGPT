@@ -8,15 +8,16 @@ model_config:
   bias: false
 
 training_config:
-  learning_rate: 1.0e-3
-  swa_lrs: 1.0e-4
-  batch_size: 16
+  learning_rate: 0.5e-3
+  swa_lrs: 0.5e-4
+  batch_size: 32
   accumulate_gradients: 8
-  beta2: 0.99
-  min_lr: 1.0e-4
-  max_steps: 10000
-  val_check_interval: 200
-  limit_val_batches: 100
+  beta2: 0.999
+  min_lr: 0.5e-4
+  max_steps: 5000
+  grad_clip: 0.1
+  val_check_interval: 250
+  limit_val_batches: 200
 
 io_config:
   experiment_name: 'gpt-2'
