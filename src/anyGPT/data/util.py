@@ -1,7 +1,7 @@
 import os
 import pickle
 
-from anyGPT.data.prepare_data import DEFAULT_DATADIR
+from anyGPT import DEFAULT_DATADIR
 
 
 def load_metadata(dataset_name):
@@ -12,3 +12,11 @@ def load_metadata(dataset_name):
         with open(meta_file, "rb") as f:
             meta = pickle.load(f)
     return meta
+
+
+def encode(string, mapping):
+    return [mapping[ch] for ch in string]
+
+
+def decode(ints, mapping):
+    return "".join([mapping[i] for i in ints])

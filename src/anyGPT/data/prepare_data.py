@@ -2,15 +2,12 @@ import argparse
 import os
 import pickle
 
+import numpy as np
 import requests
 import tiktoken
-import numpy as np
 
-from anyGPT import DEFAULT_DIR
-from anyGPT.data.char_tokenizer import encode
-
-DEFAULT_DATADIR = os.path.join(DEFAULT_DIR, "data")
-RAW_DATADIR = os.path.join(DEFAULT_DATADIR, "raw_data")
+from anyGPT import RAW_DATADIR, DEFAULT_DATADIR
+from anyGPT.data.util import encode
 
 
 def _make_dir(dir_name):

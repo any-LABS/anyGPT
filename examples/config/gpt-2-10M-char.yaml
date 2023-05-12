@@ -1,5 +1,5 @@
 model_config:
-  name: 'gpt-2-30M-char'
+  name: 'gpt-2-10M-char'
   block_size: 256
   dropout: 0.2
   embedding_size: 384
@@ -16,7 +16,7 @@ training_config:
   beta2: 0.99
   min_lr: 1.0e-4
   max_steps: 5000
-  val_check_interval: 100
+  val_check_interval: 250
   limit_val_batches: 200
 
 io_config:
