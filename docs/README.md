@@ -59,6 +59,17 @@ $ docker run --gpus all -v /path/to/local/dir:/data -it anygpt
 
 The above example mounts `/path/to/local/dir` to the `/data` directory in the container, and all data and changes are shared between them dynamically.
 
+#### Non interactive Docker
+
+The above documentation explains how to run a Docker container with an interactive session of anyGPT. You can
+also run anyGPT commands to completion using Docker by overriding the entrypoint
+
+```shell
+$ docker run --gpus=all -v /path/to/your/data:/data --entrypoint anygpt-run -it anygpt /data/test.ckpt "hello world"
+```
+
+The above command runs `anygpt-run` with the parameters `/data/test.ckpt "hello world"`
+
 ### Dependencies
 
 * torch >= 2.0.0
@@ -79,6 +90,8 @@ The above example mounts `/path/to/local/dir` to the `/data` directory in the co
 * CLI and config file driven GPT training
 * Supports CPU, GPU, TPU, IPU, and HPU
 * Distributed training strategies for training at scale
+* Easy spin up using Docker
+* FastAPI end-points for containerized microservice deployment
 
 ### Roadmap
 
@@ -88,7 +101,6 @@ The above example mounts `/path/to/local/dir` to the `/data` directory in the co
     * push to hub
 * Easy spin VM spinup/getting started with
     * Downloading of pre-trained models
-    * FastAPI end-points for containerized microservice deployment
     * Gradio ChatGPT style interface for testing and experimentation
 * Fine-tuning of pre-trained models
 * Reinforcement Learning from Human Feedback and Rules Base Reward Modeling for LLM alignment
@@ -145,6 +157,52 @@ And all the men and women merely players;
 They have their exits and their entrances,
 And one man in his time plays many parts,"
 ```
+
+### Inference Microservice
+
+anyGPT supports running models as a hosted microservice with a singular endpoint for inference.
+To launch the microservice, use the `anygpt-serve` entrypoint.
+
+#### Commandline Options
+
+```shell
+$ anygpt-serve -h
+usage: anyGPT inference service [-h] [--port PORT] [--log-level LOG_LEVEL] model
+
+Loads an anyGPT model and hosts it on a simple microservice that can run inference over the network.
+
+positional arguments:
+  model                 Path t0 the trained model checkpoint to load
+
+options:
+  -h, --help            show this help message and exit
+  --port PORT           Port to start the microservice on (default: 5000)
+  --host HOST           Host to bind microservice to (default: 127.0.0.1)
+  --log-level LOG_LEVEL
+                        uvicorn log level (default: info)
+```
+
+#### Example
+
+```shell
+$ anygpt-serve results/gpt-1/version_0/checkpoints/epoch=0-step=5000.ckpt --port 5000 --log-level info
+```
+
+#### Sending Requests
+
+`anygpt-serve` uses [FastAPI](https://fastapi.tiangolo.com/lo/#interactive-api-docs) to serve the microservice.
+To see the available microservice api go to the  `/docs` endpoint in your browser once the microservice is started
+
+#### Spinning up Microservice in Docker
+
+```shell
+$ docker run --gpus=all -v /path/to/your/data:/data -p 5000:5000 --entrypoint anygpt-serve -it anygpt /data/test.ckpt --port 5000 --host 0.0.0.0 --log-level info
+INFO:     Started server process [1]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:5000 (Press CTRL+C to quit)
+```
+
 
 ## Documentation
 
