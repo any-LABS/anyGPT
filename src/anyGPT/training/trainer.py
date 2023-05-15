@@ -1,6 +1,10 @@
 import lightning.pytorch as pl
 import torch
-from lightning.pytorch.callbacks import StochasticWeightAveraging
+from lightning.pytorch.callbacks import (
+    StochasticWeightAveraging,
+    EarlyStopping,
+    ModelCheckpoint,
+)
 from lightning.pytorch.loggers import TensorBoardLogger
 from torch.utils.data import DataLoader
 
@@ -48,7 +52,18 @@ class AnyGPTTrainer:
             gradient_clip_val=self.settings.training_config.grad_clip,
             accumulate_grad_batches=self.settings.training_config.accumulate_gradients,
             callbacks=[
-                StochasticWeightAveraging(swa_lrs=self.settings.training_config.swa_lrs)
+                StochasticWeightAveraging(
+                    swa_lrs=self.settings.training_config.swa_lrs
+                ),
+                EarlyStopping("val/loss", mode="min"),
+                ModelCheckpoint(
+                    monitor="val/loss",
+                    save_last=True,
+                    save_top_k=2,
+                    mode="min",
+                    save_on_train_epoch_end=False,
+                    auto_insert_metric_name=True,
+                ),
             ],
             val_check_interval=self.settings.training_config.val_check_interval,
             logger=self.logger,

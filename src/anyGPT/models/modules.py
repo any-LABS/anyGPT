@@ -25,7 +25,7 @@ class CausalSelfAttention(nn.Module):
         super().__init__()
         assert config.embedding_size % config.num_heads == 0
 
-        # query, key, value projections for all head, in a batch
+        # query, key, value projections for all heads, in a batch
         self.c_attn = nn.Linear(
             config.embedding_size, 3 * config.embedding_size, bias=config.bias
         )
