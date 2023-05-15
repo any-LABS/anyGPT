@@ -2,27 +2,14 @@ import tiktoken
 import torch
 import torch.nn.functional as F
 
-from anyGPT.data.util import load_metadata
+from anyGPT.data.util import create_enc_dec
 from anyGPT.models.lightning import AnyGPTLit
 
 
 class AnyGPTRunner:
     def __init__(self, checkpoint_path):
         self.model = AnyGPTLit.load_from_checkpoint(checkpoint_path).eval()
-        self.encode, self.decode = self._create_enc_dec()
-
-    def _create_enc_dec(self):
-        dataset = self.model.settings.io_config.dataset
-        meta = load_metadata(dataset)
-        if meta is None:
-            encoder = tiktoken.get_encoding("gpt2")
-            encode = lambda s: encoder.encode(s, allowed_special={"<|endoftext|>"})
-            decode = lambda l: encoder.decode(l)
-        else:
-            str_to_int, int_to_str = meta["str_to_int"], meta["int_to_str"]
-            encode = lambda s: [str_to_int[c] for c in s]
-            decode = lambda l: "".join([int_to_str[i] for i in l])
-        return encode, decode
+        self.encode, self.decode = create_enc_dec(self.model.settings.io_config.dataset)
 
     def sample(self, x, max_new_tokens: int = 500, temperature: float = 0.8, top_k=200):
         start_ids = self.encode(x)
