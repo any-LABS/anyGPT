@@ -8,6 +8,11 @@ class SimpleConfig:
             if key in kwarg_keys:
                 self.__dict__[key] = kwargs[key]
 
+    def update(self, kwargs):
+        for key, value in kwargs.items():
+            if hasattr(self, key):
+                setattr(self, key, value)
+
 
 @dataclass
 class ModelConfig(SimpleConfig):
@@ -27,7 +32,7 @@ class TrainingConfig(SimpleConfig):
     learning_rate: float = 6e-4
     batch_size: int = 8
     accumulate_gradients: int = 8
-    swa_lrs: float = 6e-3
+    swa_lrs: float = 6e-4
     max_steps: int = 5000
     limit_train_batches: int = 1.0
     limit_val_batches: int = 1.0
