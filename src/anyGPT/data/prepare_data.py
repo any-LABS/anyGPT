@@ -68,7 +68,7 @@ def _save_to_bin(name, train_ids, val_ids, test_ids, meta=None):
             pickle.dump(meta, f)
 
 
-def _tokenize_data_char(name):
+def _tokenize_file_char(name):
     input_file_path = os.path.join(RAW_DATADIR, f"{name}.txt")
     with open(input_file_path, "r") as f:
         data = f.read()
@@ -103,10 +103,7 @@ def _tokenize_data_char(name):
     _save_to_bin(name, train_ids, val_ids, test_ids, meta)
 
 
-def _tokenize_data(name, bpe):
-    input_file_path = os.path.join(RAW_DATADIR, f"{name}.txt")
-    with open(input_file_path, "r") as f:
-        data = f.read()
+def _tokenize_data(data, bpe):
     n = len(data)
     tmp_data = data[: int(n * 0.9)]
     test_data = data[int(n * 0.9) :]
@@ -118,6 +115,17 @@ def _tokenize_data(name, bpe):
     train_ids = enc.encode_ordinary(train_data)
     val_ids = enc.encode_ordinary(val_data)
     test_ids = enc.encode_ordinary(test_data)
+
+    return train_ids, val_ids, test_ids
+
+
+def _tokenize_file(name, bpe):
+    input_file_path = os.path.join(RAW_DATADIR, f"{name}.txt")
+    with open(input_file_path, "r") as f:
+        data = f.read()
+
+    train_ids, val_ids, test_ids = _tokenize_data(data, bpe)
+
     print(f"Training set has {len(train_ids):,} tokens")
     print(f"Validation set has {len(val_ids):,} tokens")
     print(f"Test set has {len(test_ids):,} tokens")
@@ -129,9 +137,9 @@ def prepare_data(name: str, url: str, is_char: bool) -> None:
     print(f"Preparing dataset '{name}' from url: {url}.")
     _download_data(name, url)
     if is_char:
-        _tokenize_data_char(name)
+        _tokenize_file_char(name)
     else:
-        _tokenize_data(name, "gpt2")
+        _tokenize_file(name, "gpt2")
 
 
 def main():
