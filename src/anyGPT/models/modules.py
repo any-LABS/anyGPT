@@ -112,7 +112,7 @@ class TxBlock(nn.Module):
     def __init__(self, config: ModelConfig):
         super().__init__()
         self.ln_1 = LayerNorm(config)
-        self.attention = CausalSelfAttention(config)
+        self.attn = CausalSelfAttention(config)
         self.ln_2 = LayerNorm(config)
         self.mlp = MLP(config)
         if config.move_layer_norm:
@@ -125,11 +125,11 @@ class TxBlock(nn.Module):
         return x
 
     def _pre_layer_norm(self, x):
-        x = x + self.attention(self.ln_1(x))
+        x = x + self.attn(self.ln_1(x))
         x = x + self.mlp(self.ln_2(x))
         return x
 
     def _post_layer_norm(self, x):
-        x = self.ln_1(x + self.attention(x))
+        x = self.ln_1(x + self.attn(x))
         x = self.ln_2(x + self.mlp(x))
         return x

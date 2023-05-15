@@ -18,6 +18,10 @@ class AnyGPTTrainer:
             self.model = torch.compile(AnyGPTLit(self.settings))
         else:
             self.model = AnyGPTLit(self.settings)
+
+        if self.settings.training_config.init_from is not "scratch":
+            self.model.from_pretrained(self.settings.training_config.init_from)
+
         self.train_set = NextTokenDataset(
             self.settings.io_config.dataset,
             "train",

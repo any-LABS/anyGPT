@@ -1,0 +1,11 @@
+training_config:
+  batch_size: 1
+  accumulate_gradients: 1
+  max_steps: 1
+  limit_val_batches: 1
+  val_check_interval: 1
+  init_from: 'gpt2' # names from huggingface gpt space
+
+io_config:
+  experiment_name: 'gpt-2'
+  dataset: 'shakespeare_karpathy'

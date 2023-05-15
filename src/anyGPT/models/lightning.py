@@ -1,7 +1,11 @@
+import os
+
 import lightning.pytorch as pl
 import torch.optim
 from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts
 import inspect
+
+from transformers import GPT2LMHeadModel
 
 from anyGPT.config.settings import AnyGPTSettings
 from anyGPT.models.architectures import AnyGPT
@@ -14,6 +18,62 @@ class AnyGPTLit(pl.LightningModule):
         self.settings = settings
         self.model = AnyGPT(self.settings.model_config)
         self.save_hyperparameters()
+
+    def from_pretrained(self, name):
+        assert name in {"gpt2", "gpt2-medium", "gpt2-large", "gpt2-xl"}
+        self._update_settings("gpt2")
+        self.model = AnyGPT(self.settings.model_config)
+        state_dict = self.model.state_dict()
+        state_dict_keys = state_dict.keys()
+        state_dict_keys = [k for k in state_dict_keys if not k.endswith(".attn.bias")]
+        model_hf = GPT2LMHeadModel.from_pretrained(name)
+        state_dict_hf = model_hf.state_dict()
+        state_dict_hf_keys = state_dict_hf.keys()
+        state_dict_hf_keys = [
+            k for k in state_dict_hf_keys if not k.endswith(".attn.masked_bias")
+        ]
+        state_dict_hf_keys = [
+            k for k in state_dict_hf_keys if not k.endswith(".attn.bias")
+        ]
+        transposed = [
+            "attn.c_attn.weight",
+            "attn.c_proj.weight",
+            "mlp.c_fc.weight",
+            "mlp.c_proj.weight",
+        ]
+        assert len(state_dict_hf_keys) == len(
+            state_dict_keys
+        ), f"mismatched keys: {len(state_dict_hf_keys)} != {len(state_dict_keys)}"
+        for k in state_dict_hf_keys:
+            if any(k.endswith(w) for w in transposed):
+                assert state_dict_hf[k].shape[::-1] == state_dict[k].shape
+                with torch.no_grad():
+                    state_dict[k].copy_(state_dict_hf[k].t())
+            else:
+                assert state_dict_hf[k].shape == state_dict[k].shape
+                with torch.no_grad():
+                    state_dict[k].copy_(state_dict_hf[k])
+
+    def _update_settings(self, name):
+        model_specs = {
+            "gpt2": dict(
+                num_layers=12, num_heads=12, embedding_size=768
+            ),  # 124M params
+            "gpt2-medium": dict(
+                num_layers=24, num_heads=16, embedding_size=1024
+            ),  # 350M params
+            "gpt2-large": dict(
+                num_layers=36, num_heads=20, embedding_size=1280
+            ),  # 774M params
+            "gpt2-xl": dict(
+                num_layers=48, num_heads=25, embedding_size=1600
+            ),  # 1558M params
+        }[name]
+        model_specs["vocab_size"] = 50257
+        model_specs["block_size"] = 1024
+        model_specs["bias"] = True
+        model_specs["name"] = name
+        self.settings.model_config.update(model_specs)
 
     def forward(self, *args, **kwargs):
         return self.model(*args, **kwargs)
