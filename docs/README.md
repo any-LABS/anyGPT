@@ -92,12 +92,13 @@ The above command runs `anygpt-run` with the parameters `/data/test.ckpt "hello 
 * Distributed training strategies for training at scale
 * Easy spin up using Docker
 * FastAPI end-points for containerized microservice deployment
+* HuggingFace integration
+    * Load pre-trained gpt models
 
 ### Roadmap
 
 * Documentation
 * HuggingFace integration
-    * Load pre-trained gpt models
     * push to hub
 * Easy spin VM spinup/getting started with
     * Downloading of pre-trained models
