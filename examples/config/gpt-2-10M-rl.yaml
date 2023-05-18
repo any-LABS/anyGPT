@@ -1,0 +1,20 @@
+model_config:
+  name: 'gpt-2-10M-char'
+  block_size: 256
+  dropout: 0.2
+  embedding_size: 384
+  num_heads: 6
+  num_layers: 6
+  vocab_size: 65
+  bias: false
+
+io_config:
+  experiment_name: 'gpt-2-char-rl'
+  dataset: 'shakespeare_karpathy_char'
+
+ppo_config:
+  checkpoint: 'results/gpt-2-char/version_0/checkpoints/last.ckpt'
+  env_kwargs:
+    label: "neutral"
+    model_name: "j-hartmann/emotion-english-distilroberta-base"
+    dataset: "shakespeare_karpathy_char"

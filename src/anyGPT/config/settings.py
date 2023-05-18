@@ -67,11 +67,33 @@ class TorchConfig(SimpleConfig):
 
 
 @dataclass
+class PPOConfig(SimpleConfig):
+    learning_rate: float = 1e-3
+    lamda: float = 0.95
+    gamma: float = 1.0
+    max_episode_len: int = 1
+    batch_size: int = 16
+    buffer_size: int = 128
+    clip_ratio: float = 0.2
+    beta: float = 0.1
+    beta_kl: float = 0.2
+    epochs: int = 4
+    num_optim_iters: int = 4
+    env: str = "anyGPT/SequenceClassificationEnv-v0"
+    env_kwargs: dict = None
+    checkpoint: str = None
+    shared_actor_critic: bool = False
+    action_size: int = 32
+    observation_size: int = 8
+
+
+@dataclass
 class AnyGPTSettings:
     model_config: ModelConfig
     training_config: TrainingConfig
     io_config: IOConfig
     torch_config: TorchConfig
+    ppo_config: PPOConfig
 
     def __init__(self, **kwargs):
         kwarg_keys = kwargs.keys()
@@ -91,3 +113,5 @@ class AnyGPTSettings:
             self.io_config = IOConfig(**self.io_config)
         if isinstance(self.torch_config, dict):
             self.torch_config = TorchConfig(**self.torch_config)
+        if isinstance(self.ppo_config, dict):
+            self.ppo_config = PPOConfig(**self.ppo_config)

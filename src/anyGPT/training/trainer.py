@@ -10,7 +10,8 @@ from torch.utils.data import DataLoader
 
 from anyGPT.config.settings import AnyGPTSettings
 from anyGPT.data.next_token_dataset import NextTokenDataset
-from anyGPT.models.lightning import AnyGPTLit
+from anyGPT.models.anygpt_lit import AnyGPTLit
+from anyGPT.training.model_checkpoint import AnyGPTModelCheckpoint
 
 
 class AnyGPTTrainer:
@@ -23,7 +24,7 @@ class AnyGPTTrainer:
         else:
             self.model = AnyGPTLit(self.settings)
 
-        if self.settings.training_config.init_from is not "scratch":
+        if self.settings.training_config.init_from != "scratch":
             self.model.from_pretrained(self.settings.training_config.init_from)
 
         self.train_set = NextTokenDataset(
@@ -59,14 +60,16 @@ class AnyGPTTrainer:
                 StochasticWeightAveraging(
                     swa_lrs=self.settings.training_config.swa_lrs
                 ),
-                EarlyStopping("val/loss", mode="min"),
-                ModelCheckpoint(
-                    monitor="val/loss",
+                EarlyStopping("val_loss", mode="min"),
+                AnyGPTModelCheckpoint(
+                    self.model.model,
+                    monitor="val_loss",
                     save_last=True,
                     save_top_k=2,
                     mode="min",
                     save_on_train_epoch_end=False,
                     auto_insert_metric_name=True,
+                    filename="anygpt-pretrained-{epoch:02d}--{step:02d}-{val_loss:.2f}",
                 ),
             ],
             val_check_interval=self.settings.training_config.val_check_interval,

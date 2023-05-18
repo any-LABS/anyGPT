@@ -3,7 +3,7 @@ import torch
 import torch.nn.functional as F
 
 from anyGPT.data.util import create_enc_dec
-from anyGPT.models.lightning import AnyGPTLit
+from anyGPT.models.anygpt_lit import AnyGPTLit
 
 
 class AnyGPTRunner:

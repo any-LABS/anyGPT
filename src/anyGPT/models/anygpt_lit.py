@@ -8,7 +8,7 @@ import inspect
 from transformers import GPT2LMHeadModel
 
 from anyGPT.config.settings import AnyGPTSettings
-from anyGPT.models.architectures import AnyGPT
+from anyGPT.models.anygpt import AnyGPT
 from anyGPT.models.modules import LayerNorm
 
 
@@ -81,13 +81,13 @@ class AnyGPTLit(pl.LightningModule):
     def training_step(self, batch, batch_index):
         x, y = batch
         logits, loss = self.model(x, y)
-        self.log("train/loss", loss)
+        self.log("train_loss", loss)
         return loss
 
     def validation_step(self, batch, batch_index):
         x, y = batch
         logits, loss = self.model(x, y)
-        self.log("val/loss", loss)
+        self.log("val_loss", loss)
         return loss
 
     def configure_optimizers(self):

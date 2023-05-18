@@ -1,6 +1,7 @@
 import os
 import pickle
 
+import numpy as np
 import tiktoken
 
 from anyGPT import DEFAULT_DATADIR
@@ -21,6 +22,8 @@ def encode(string, mapping):
 
 
 def decode(ints, mapping):
+    if isinstance(ints, np.ndarray):
+        ints = ints.squeeze(axis=0).tolist()
     return "".join([mapping[i] for i in ints])
 
 
@@ -32,6 +35,6 @@ def create_enc_dec(dataset):
         dec = lambda l: encoder.decode(l)
     else:
         str_to_int, int_to_str = meta["str_to_int"], meta["int_to_str"]
-        enc = lambda s: [str_to_int[c] for c in s]
-        dec = lambda l: "".join([int_to_str[i] for i in l])
+        enc = lambda s: encode(s, str_to_int)
+        dec = lambda l: decode(l, int_to_str)
     return enc, dec
