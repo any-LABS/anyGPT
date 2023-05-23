@@ -3,4 +3,19 @@ repos:
     rev: 23.3.0
     hooks:
     - id: black
+      name: black-anygpt
       language_version: python3.10
+-   repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.3.0
+    hooks:
+      - id: mypy
+        name: mypy-anygpt
+        files: "src/anyGPT"
+        args: [--ignore-missing-imports, --disallow-incomplete-defs, --no-strict-optional]
+        additional_dependencies: [types-PyYAML, types-requests]
+-   repo: https://github.com/PyCQA/flake8
+    rev: 6.0.0
+    hooks:
+    -   id: flake8
+        name: flake8-anygpt
+        additional_dependencies: [flake8-comprehensions, flake8-tidy-imports, flake8-bugbear]

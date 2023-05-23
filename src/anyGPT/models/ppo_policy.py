@@ -1,10 +1,12 @@
-import gymnasium
+from typing import Tuple
+
 import torch
-import torch.nn as nn
+from torch import nn
 from torch.nn import functional as F
+
 from anyGPT.config.settings import AnyGPTSettings
+from anyGPT.models.anygpt import AnyGPT
 from anyGPT.models.anygpt_critic import AnyGPTCritic
-from anyGPT.models.anygpt_lit import AnyGPTLit
 
 
 class PPOPolicy(nn.Module):
@@ -18,7 +20,8 @@ class PPOPolicy(nn.Module):
 
     def _init_actor(self):
         checkpoint = self.settings.ppo_config.checkpoint
-        actor = AnyGPTLit.load_from_checkpoint(checkpoint).model
+        # actor = AnyGPTLit.load_from_checkpoint(checkpoint).model
+        actor, _ = AnyGPT.load_from_pretrained(checkpoint, fine_tune=True)
         return actor
 
     def _init_critic(self):
@@ -37,20 +40,20 @@ class PPOPolicy(nn.Module):
 
     def generate(
         self,
-        x,
-        max_new_tokens,
-        block_size,
-        device,
+        x: torch.Tensor,
+        max_new_tokens: int,
+        block_size: int,
+        device: str,
         use_reference: bool = True,
         temperature: float = 1.0,
-        top_k=None,
-    ):
+        top_k: int = None,
+    ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
         probs = torch.tensor([]).to(device)
         log_probs = torch.tensor([]).to(device)
         log_probs_ref = torch.tensor([]).to(device)
         values = torch.tensor([]).to(device)
 
-        for i in range(max_new_tokens):
+        for _ in range(max_new_tokens):
             x_cond = x if x.size(1) <= block_size else x[:, -block_size:]
             logits, _ = self.actor(x_cond)
             value_next, _ = self.critic(x_cond)

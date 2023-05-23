@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Union
 
 
 class SimpleConfig:
@@ -25,6 +26,8 @@ class ModelConfig(SimpleConfig):
     dropout: float = 0.2
     bias: bool = True
     move_layer_norm: bool = True
+    adapter_bottleneck_factor: int = 48
+    fine_tune: bool = False
 
 
 @dataclass
@@ -34,10 +37,10 @@ class TrainingConfig(SimpleConfig):
     accumulate_gradients: int = 8
     swa_lrs: float = 6e-4
     max_steps: int = 5000
-    limit_train_batches: int = 1.0
-    limit_val_batches: int = 1.0
-    limit_test_batches: int = 1.0
-    val_check_interval: float = 100
+    limit_train_batches: Union[float, int] = 1.0
+    limit_val_batches: Union[float, int] = 1.0
+    limit_test_batches: Union[float, int] = 1.0
+    val_check_interval: Union[float, int] = 100
     weight_decay: float = 1e-1
     beta1: float = 0.9
     beta2: float = 0.95
@@ -75,16 +78,17 @@ class PPOConfig(SimpleConfig):
     batch_size: int = 16
     buffer_size: int = 128
     clip_ratio: float = 0.2
-    beta: float = 0.1
-    beta_kl: float = 0.2
+    beta: float = 5e-3
+    beta_kl: float = 1e-2
     epochs: int = 4
     num_optim_iters: int = 4
     env: str = "anyGPT/SequenceClassificationEnv-v0"
     env_kwargs: dict = None
     checkpoint: str = None
     shared_actor_critic: bool = False
-    action_size: int = 32
-    observation_size: int = 8
+    action_size: int = 512
+    observation_size: int = 512
+    scale_critic_loss: bool = True
 
 
 @dataclass

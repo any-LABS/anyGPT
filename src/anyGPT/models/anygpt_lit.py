@@ -1,10 +1,8 @@
-import os
+import inspect
 
 import lightning.pytorch as pl
 import torch.optim
 from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts
-import inspect
-
 from transformers import GPT2LMHeadModel
 
 from anyGPT.config.settings import AnyGPTSettings
@@ -56,18 +54,26 @@ class AnyGPTLit(pl.LightningModule):
 
     def _update_settings(self, name):
         model_specs = {
-            "gpt2": dict(
-                num_layers=12, num_heads=12, embedding_size=768
-            ),  # 124M params
-            "gpt2-medium": dict(
-                num_layers=24, num_heads=16, embedding_size=1024
-            ),  # 350M params
-            "gpt2-large": dict(
-                num_layers=36, num_heads=20, embedding_size=1280
-            ),  # 774M params
-            "gpt2-xl": dict(
-                num_layers=48, num_heads=25, embedding_size=1600
-            ),  # 1558M params
+            "gpt2": {
+                "num_layers": 12,
+                "num_heads": 12,
+                "embedding_size": 768,
+            },  # 124M params
+            "gpt2-medium": {
+                "num_layers": 24,
+                "num_heads": 16,
+                "embedding_size": 1024,
+            },  # 350M params
+            "gpt2-large": {
+                "num_layers": 36,
+                "num_heads": 20,
+                "embedding_size": 1280,
+            },  # 774M params
+            "gpt2-xl": {
+                "num_layers": 48,
+                "num_heads": 25,
+                "embedding_size": 1600,
+            },  # 1558M params
         }[name]
         model_specs["vocab_size"] = 50257
         model_specs["block_size"] = 1024
@@ -102,7 +108,7 @@ class AnyGPTLit(pl.LightningModule):
         )
         if self.settings.training_config.decay_lr:
             for mn, m in self.named_modules():
-                for pn, p in m.named_parameters():
+                for pn, _ in m.named_parameters():
                     fpn = "%s.%s" % (mn, pn) if mn else pn  # full param name
                     # random note: because named_modules and named_parameters are recursive
                     # we will see the same tensors p many many times. but doing it this way
@@ -117,7 +123,7 @@ class AnyGPTLit(pl.LightningModule):
                         # weights of blacklist modules will NOT be weight decayed
                         no_decay.add(fpn)
             decay.remove("model.lm_head.weight")
-            param_dict = {pn: p for pn, p in self.named_parameters()}
+            param_dict = dict(self.named_parameters())
             inter_params = decay & no_decay
             union_params = decay | no_decay
             assert (
@@ -132,12 +138,12 @@ class AnyGPTLit(pl.LightningModule):
             )
             optim_groups = [
                 {
-                    "params": [param_dict[pn] for pn in sorted(list(decay))],
+                    "params": [param_dict[pn] for pn in sorted(decay)],
                     "initial_lr": self.settings.training_config.learning_rate,
                     "weight_decay": self.settings.training_config.weight_decay,
                 },
                 {
-                    "params": [param_dict[pn] for pn in sorted(list(no_decay))],
+                    "params": [param_dict[pn] for pn in sorted(no_decay)],
                     "initial_lr": self.settings.training_config.learning_rate,
                     "weight_decay": 0.0,
                 },
@@ -147,7 +153,7 @@ class AnyGPTLit(pl.LightningModule):
 
         fused_available = "fused" in inspect.signature(torch.optim.AdamW).parameters
         use_fused = fused_available and self.device == "cuda"
-        extra_args = dict(fused=True) if use_fused else dict()
+        extra_args = {"fused": True} if use_fused else {}
         optimizer = torch.optim.AdamW(
             optim_groups, lr=learning_rate, betas=betas, **extra_args
         )

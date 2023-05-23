@@ -1,9 +1,5 @@
-import time
-
-import numpy as np
-
-import anyGPT
 import gymnasium as gym
+import numpy as np
 import pytest
 
 test_data = [
@@ -78,12 +74,18 @@ def test_env(model_name, dataset, encoded, label):
         gibberish = np.array(env.encode(gibberish))
 
     obs, reward, terminated, _, info = env.step(no_gibberish)
-    assert obs is None
+    if encoded:
+        assert obs == -1
+    else:
+        assert obs == "[EPISODE_END]"
     assert reward > 0.5
     assert terminated
 
     obs, reward, terminated, _, info = env.step(gibberish)
-    assert obs is None
+    if encoded:
+        assert obs == -1
+    else:
+        assert obs == "[EPISODE_END]"
     assert reward < 0.5
     assert terminated
 

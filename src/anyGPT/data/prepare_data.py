@@ -72,10 +72,10 @@ def _tokenize_file_char(name):
     input_file_path = os.path.join(RAW_DATADIR, f"{name}.txt")
     with open(input_file_path, "r") as f:
         data = f.read()
-    chars = sorted(list(set(data)))
+    chars = sorted(set(data))
     vocab_size = len(chars)
     str_to_int = {ch: i for i, ch in enumerate(chars)}
-    int_to_str = {i: ch for i, ch in enumerate(chars)}
+    int_to_str = dict(enumerate(chars))
 
     n = len(data)
     tmp_data = data[: int(n * 0.9)]

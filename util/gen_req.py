@@ -27,7 +27,7 @@ parser.add_argument(
 def main():
     args = parser.parse_args()
     package_path = args.package_path.split("[")[0]
-    extras_keys = re.findall("\[([^)]+)\]", args.package_path)
+    extras_keys = re.findall("\[([^)]+)\]", args.package_path)  # noqa
     config_path = os.path.join(os.path.abspath(package_path), "setup.cfg")
     if not os.path.exists(config_path):
         raise FileNotFoundError
@@ -37,7 +37,7 @@ def main():
     for key in extras_keys:
         try:
             req_str += cf["options.extras_require"][key]
-        except KeyError as e:
+        except KeyError:
             print(f"Extra requires key {key} not found.")
     if args.output is not None:
         with open(args.output, "w") as f:

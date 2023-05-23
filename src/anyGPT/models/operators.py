@@ -1,11 +1,10 @@
 import math
 
 import torch
-import torch.nn as nn
 from torch import Tensor
 
 
-def new_gelu(x: Tensor):
+def new_gelu(x: Tensor) -> Tensor:
     return (
         0.5
         * x

@@ -1,12 +1,10 @@
 import gymnasium
 import pytest
-import lightning.pytorch as pl
-import torch
 
 from anyGPT.config.util import parse_config, config_to_settings
 from anyGPT.models.anygpt import AnyGPT
 from anyGPT.models.anygpt_ppo_lit import AnyGPTPPOLit
-from anyGPT.models.ppo_policy import AnyGPTCritic, PPOPolicy
+from anyGPT.models.ppo_policy import AnyGPTCritic
 
 config_file = """
 model_config:
@@ -24,8 +22,12 @@ io_config:
   dataset: 'shakespeare_karpathy_char'
 
 ppo_config:
-  checkpoint: 'results/gpt-2-char/version_0/checkpoints/last.ckpt'
+  checkpoint: 'tests/models/pre-trained-10M-char.pt'
   shared_actor_critic: true
+  action_size: 8
+  observation_size: 8
+  batch_size: 2
+  buffer_size: 4
   env_kwargs:
     label: "neutral"
     model_name: "j-hartmann/emotion-english-distilroberta-base"
@@ -58,12 +60,16 @@ def test_init_env(settings):
     assert isinstance(env, gymnasium.Env)
 
 
-def test_training(settings):
-    # policy = PPOPolicy(settings).to("cpu")
-    # y = torch.tensor([2, 3], dtype=torch.long, device="cpu")[None, ...]
-    # output = policy.generate(y, 10, 256, "cpu")
-    # print(output)
-    ppo = AnyGPTPPOLit(settings).to("cuda")
-    # ppo.sample_trajectories()
-    trainer = pl.Trainer(limit_train_batches=10, max_epochs=1)
-    trainer.fit(ppo)
+def test_sample_trajectories(settings):
+    ppo = AnyGPTPPOLit(settings)
+    trajectories = ppo.sample_trajectories()
+    assert trajectories is not None
+    for trajectory in trajectories:
+        assert trajectory is not None
+        state, action, logp, lopg_ref, qval, adv = trajectory
+        assert state.shape == (1, 8)
+        assert action.shape == (1, 8)
+        assert logp.shape == (1, 8)
+        assert lopg_ref.shape == (1, 8)
+        assert qval.shape == (1, 8)
+        assert adv.shape == (1, 8)

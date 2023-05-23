@@ -23,7 +23,9 @@ def encode(string, mapping):
 
 def decode(ints, mapping):
     if isinstance(ints, np.ndarray):
-        ints = ints.squeeze(axis=0).tolist()
+        if len(ints.shape) == 2:
+            ints = ints.squeeze()
+        ints = ints.tolist()
     return "".join([mapping[i] for i in ints])
 
 
@@ -31,10 +33,10 @@ def create_enc_dec(dataset):
     meta = load_metadata(dataset)
     if meta is None:
         encoder = tiktoken.get_encoding("gpt2")
-        enc = lambda s: encoder.encode(s, allowed_special={"<|endoftext|>"})
-        dec = lambda l: encoder.decode(l)
+        enc = lambda s: encoder.encode(s, allowed_special={"<|endoftext|>"})  # noqa
+        dec = lambda l: encoder.decode(l)  # noqa
     else:
         str_to_int, int_to_str = meta["str_to_int"], meta["int_to_str"]
-        enc = lambda s: encode(s, str_to_int)
-        dec = lambda l: decode(l, int_to_str)
+        enc = lambda s: encode(s, str_to_int)  # noqa
+        dec = lambda l: decode(l, int_to_str)  # noqa
     return enc, dec
