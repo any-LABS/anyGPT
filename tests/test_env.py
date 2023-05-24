@@ -2,6 +2,8 @@ import gymnasium as gym
 import numpy as np
 import pytest
 
+from anyGPT.data.prepare_data import prepare_data
+
 test_data = [
     (
         "j-hartmann/emotion-english-distilroberta-base",
@@ -52,6 +54,22 @@ test_data = [
         "clean",
     ),
 ]
+
+
+def setup_data():
+    prepare_data(
+        "shakespeare_karpathy_char",
+        "https://raw.githubusercontent.com/karpathy/char-rnn/master/data/tinyshakespeare/input.txt",
+        True,
+    )
+    prepare_data(
+        "shakespeare_karpathy",
+        "https://raw.githubusercontent.com/karpathy/char-rnn/master/data/tinyshakespeare/input.txt",
+        False,
+    )
+
+
+setup_data()
 
 
 @pytest.mark.parametrize("model_name,dataset,encoded,label", test_data)
