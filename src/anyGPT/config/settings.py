@@ -19,7 +19,7 @@ class SimpleConfig:
 class ModelConfig(SimpleConfig):
     name: str = "gpt-2-124M"
     block_size: int = 1024
-    vocab_size: int = 50304
+    vocab_size: int = 50257
     num_layers: int = 12
     num_heads: int = 12
     embedding_size: int = 768
