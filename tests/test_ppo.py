@@ -21,8 +21,13 @@ io_config:
   experiment_name: 'gpt-2-char-rl'
   dataset: 'shakespeare_karpathy_char'
 
+torch_config:
+  device: "cpu"
+  compile: false
+  accelerator: "cpu"
+
 ppo_config:
-  checkpoint: 'tests/models/pre-trained-10M-char.pt'
+  checkpoint: 'pretrained_models/pre-trained-10M-char.pt'
   shared_actor_critic: true
   action_size: 8
   observation_size: 8
@@ -43,7 +48,7 @@ def settings():
 
 
 def test_init_from_checkpoint(settings):
-    ppo = AnyGPTPPOLit(settings)
+    ppo = AnyGPTPPOLit(settings).to(settings.torch_config.device)
     actor_critic = ppo.policy
     assert actor_critic is not None
     actor = ppo.policy.actor
@@ -55,13 +60,13 @@ def test_init_from_checkpoint(settings):
 
 
 def test_init_env(settings):
-    ppo = AnyGPTPPOLit(settings)
+    ppo = AnyGPTPPOLit(settings).to(settings.torch_config.device)
     env = ppo.env
     assert isinstance(env, gymnasium.Env)
 
 
 def test_sample_trajectories(settings):
-    ppo = AnyGPTPPOLit(settings)
+    ppo = AnyGPTPPOLit(settings).to(settings.torch_config.device)
     trajectories = ppo.sample_trajectories()
     assert trajectories is not None
     for trajectory in trajectories:

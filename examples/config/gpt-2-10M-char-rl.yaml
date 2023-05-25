@@ -13,7 +13,7 @@ model_config:
 io_config:
   experiment_name: 'gpt-2-char'
   dataset: 'shakespeare_karpathy_char'
-  log_every_n_steps: 1
+  log_every_n_steps: 10
 
 training_config:
   learning_rate: 1.0e-3
@@ -28,10 +28,12 @@ training_config:
   seed: null
 
 torch_config:
-  compile: false
+  device: "cpu"
+#  compile: false
+#  accelerator: "cpu"
 
 ppo_config:
-  checkpoint: "results/gpt-2-char-pretrain/version_0/checkpoints/last.pt"
+  checkpoint: "results/gpt-2-char-pretrain/version_0/checkpoints/pre-trained-10M-char.pt"
   shared_actor_critic: true
   beta: 0.1
   beta_kl: 0.2

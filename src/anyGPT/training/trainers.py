@@ -81,6 +81,7 @@ class AnyGPTPreTrainer:
             limit_val_batches=self.settings.training_config.limit_val_batches,
             limit_test_batches=self.settings.training_config.limit_test_batches,
             precision=self.settings.torch_config.precision,
+            accelerator=self.settings.torch_config.accelerator,
         )
 
     def fit(self):
@@ -132,6 +133,7 @@ class AnyGPTPPOTrainer:
             enable_checkpointing=self.settings.io_config.enable_checkpointing,
             log_every_n_steps=self.settings.io_config.log_every_n_steps,
             precision=self.settings.torch_config.precision,
+            accelerator=self.settings.torch_config.accelerator,
         )
 
     def fit(self):

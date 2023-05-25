@@ -7,7 +7,7 @@ class AnyGPTCritic(AnyGPT):
     def __init__(self, model: AnyGPT, shared_backbone: bool = False):
         super().__init__(model.config)
         self._update_weights(model, shared_backbone)
-        self.freeze_pretrained(["adapter"])
+        self.freeze_params(["adapter"])
         self.lm_head = nn.Linear(self.config.embedding_size, 1, bias=False)
 
     def _update_weights(self, model: AnyGPT, shared_backbone: bool = False) -> None:

@@ -99,7 +99,7 @@ class AnyGPT(nn.Module):
 
         return y
 
-    def freeze_pretrained(self, skip_layers: List[str]) -> None:
+    def freeze_params(self, skip_layers: List[str]) -> None:
         for name, param in self.named_parameters():
             for layer in skip_layers:
                 if layer not in name:
@@ -114,13 +114,14 @@ class AnyGPT(nn.Module):
     def load_from_pretrained(
         checkpoint_path: str, fine_tune: bool = False
     ) -> Tuple[nn.Module, AnyGPTSettings]:
-        checkpoint = torch.load(checkpoint_path)
+        checkpoint = torch.load(checkpoint_path, map_location="cpu")
         config = checkpoint["model_config"]
         settings = checkpoint["settings"]
         config.fine_tune = fine_tune
         model = AnyGPT(config)
         model.load_state_dict(checkpoint["model_state_dict"], strict=False)
-        model.freeze_pretrained(["adapter"])
+        model.freeze_params(["adapter"])
+        model.to(settings.torch_config.device)
 
         return model, settings
 
