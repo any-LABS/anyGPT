@@ -1,6 +1,6 @@
 import argparse
 import functools
-from dataclasses import dataclass
+from typing import Any
 
 import yaml
 
@@ -12,18 +12,18 @@ def read_config(filename):
         return f.read()
 
 
-def parse_config(yaml_string: str):
+def parse_config(yaml_string: str) -> Any:
     try:
         return yaml.safe_load(yaml_string)
-    except yaml.YAMLError as e:
+    except yaml.YAMLError:
         print("Error reading YAML config file.")
 
 
-def config_to_settings(config):
+def config_to_settings(config: dict) -> AnyGPTSettings:
     settings = None
     try:
         settings = AnyGPTSettings(**config)
-    except TypeError as e:
+    except TypeError:
         print("Error converting YAML to config.")
 
     return settings
@@ -36,7 +36,7 @@ def get_settings(config_file: str) -> AnyGPTSettings:
     return any_gpt_settings
 
 
-def _create_parser(config_cls: dataclass) -> argparse.ArgumentParser:
+def _create_parser(config_cls: object) -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="anyGPT trainer",
         description="Trains anyGPT.",
@@ -48,7 +48,7 @@ def _create_parser(config_cls: dataclass) -> argparse.ArgumentParser:
         help="The path to the training config file.",
     )
 
-    for keys in config_cls.__annotations__.keys():
+    for _ in config_cls.__annotations__.keys():
         # TODO add automatic arguments based on 1-level nested config dataclasses
         pass
 

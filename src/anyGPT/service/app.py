@@ -1,7 +1,9 @@
 import argparse
+
 import uvicorn
 from fastapi import FastAPI, Depends
 from pydantic import BaseModel
+
 from anyGPT.inference.runner import AnyGPTRunner
 
 
@@ -9,7 +11,8 @@ from anyGPT.inference.runner import AnyGPTRunner
 def _create_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="anyGPT inference service",
-        description="Loads an anyGPT model and hosts it on a simple microservice that can run inference over the network.",
+        description="Loads an anyGPT model and hosts it on a simple microservice that can run inference over the "
+        "network.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
 
@@ -61,7 +64,9 @@ def get_runner():
 
 # Runs inference on the model
 @app.post("/infer")
-async def infer(request: InferenceRequest, runner: AnyGPTRunner = Depends(get_runner)):
+async def infer(
+    request: InferenceRequest, runner: AnyGPTRunner = Depends(get_runner)  # noqa
+) -> str:
     print(f"Running inference on {request.data}")
     kwargs = {
         "max_new_tokens": request.max_new_tokens,
@@ -69,7 +74,7 @@ async def infer(request: InferenceRequest, runner: AnyGPTRunner = Depends(get_ru
         "top_k": request.top_k,
     }
     filtered_kwargs = {k: v for k, v in kwargs.items() if v is not None}
-    return runner.sample(request.data, **filtered_kwargs)
+    return runner.sample(request.data, **filtered_kwargs)  # type: ignore
 
 
 def main():

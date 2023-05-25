@@ -1,4 +1,3 @@
-from anyGPT.config.settings import ModelConfig
 from anyGPT.config.util import parse_config, config_to_settings
 
 model_config_file = """
