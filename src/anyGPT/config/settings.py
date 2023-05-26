@@ -64,7 +64,7 @@ class IOConfig(SimpleConfig):
 @dataclass
 class TorchConfig(SimpleConfig):
     backend: str = "nccl"
-    device: str = "gpu"
+    device: str = "cuda"
     precision: str = "16-mixed"  # 32, 16-mixed, bf16-mixed, 64
     compile: bool = True
     accelerator: str = "auto"
