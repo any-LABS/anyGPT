@@ -40,3 +40,10 @@ def create_enc_dec(dataset):
         enc = lambda s: encode(s, str_to_int)  # noqa
         dec = lambda l: decode(l, int_to_str)  # noqa
     return enc, dec
+
+
+def create_enc_dec_from_metadata(metadata):
+    str_to_int, int_to_str = metadata["str_to_int"], metadata["int_to_str"]
+    enc = lambda s: encode(s, str_to_int)  # noqa
+    dec = lambda l: decode(l, int_to_str)  # noqa
+    return enc, dec

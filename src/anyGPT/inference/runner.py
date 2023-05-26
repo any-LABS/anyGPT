@@ -1,14 +1,17 @@
 from typing import Any
 
-from anyGPT.data.util import create_enc_dec
+from anyGPT.data.util import create_enc_dec, create_enc_dec_from_metadata
 from anyGPT.models.anygpt import AnyGPT
 
 
 class AnyGPTRunner:
     def __init__(self, checkpoint_path):
-        self.model, settings = AnyGPT.load_from_pretrained(checkpoint_path)
+        self.model, settings, metadata = AnyGPT.load_from_pretrained(checkpoint_path)
         self.settings = settings
-        self.encode, self.decode = create_enc_dec(self.settings.io_config.dataset)
+        if metadata is None:
+            self.encode, self.decode = create_enc_dec(self.settings.io_config.dataset)
+        else:
+            self.encode, self.decode = create_enc_dec_from_metadata(metadata)
 
     def sample(
         self,

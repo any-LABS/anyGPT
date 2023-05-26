@@ -20,8 +20,7 @@ class PPOPolicy(nn.Module):
 
     def _init_actor(self):
         checkpoint = self.settings.ppo_config.checkpoint
-        # actor = AnyGPTLit.load_from_checkpoint(checkpoint).model
-        actor, _ = AnyGPT.load_from_pretrained(checkpoint, fine_tune=True)
+        actor, _, _ = AnyGPT.load_from_pretrained(checkpoint, fine_tune=True)
         return actor
 
     def _init_critic(self):
