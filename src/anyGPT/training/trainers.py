@@ -116,7 +116,7 @@ class AnyGPTPPOTrainer:
                 StochasticWeightAveraging(
                     swa_lrs=self.settings.training_config.swa_lrs
                 ),
-                EarlyStopping("avg_ep_reward", mode="max", patience=50),
+                EarlyStopping("avg_ep_reward", mode="max", patience=100),
                 AnyGPTModelCheckpoint(
                     self.model.policy.actor,
                     monitor="avg_ep_reward",

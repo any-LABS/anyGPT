@@ -86,7 +86,7 @@ class PPOConfig(SimpleConfig):
     env: str = "anyGPT/SequenceClassificationEnv-v0"
     env_kwargs: dict = None
     checkpoint: str = None
-    shared_actor_critic: bool = False
+    shared_actor_critic: bool = True
     action_size: int = 512
     observation_size: int = 512
     scale_critic_loss: bool = True

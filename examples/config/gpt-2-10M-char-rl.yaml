@@ -29,12 +29,13 @@ training_config:
 
 torch_config:
   device: "cpu"
-#  compile: false
+  compile: false
 #  accelerator: "cpu"
 
 ppo_config:
-  checkpoint: "results/gpt-2-char-pretrain/version_0/checkpoints/pre-trained-10M-char.pt"
+  checkpoint: "results/gpt-2-char-pretrain/version_0/checkpoints/last.pt"
   shared_actor_critic: true
+  learning_rate: 1.0e-4
   beta: 0.1
   beta_kl: 0.2
   epochs: 100
