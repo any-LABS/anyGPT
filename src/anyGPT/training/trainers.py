@@ -116,7 +116,6 @@ class AnyGPTPPOTrainer:
                 StochasticWeightAveraging(
                     swa_lrs=self.settings.training_config.swa_lrs
                 ),
-                EarlyStopping("avg_ep_reward", mode="max", patience=50),
                 AnyGPTModelCheckpoint(
                     self.model.policy.actor,
                     monitor="avg_ep_reward",
@@ -126,7 +125,7 @@ class AnyGPTPPOTrainer:
                     save_on_train_epoch_end=False,
                     auto_insert_metric_name=True,
                     filename="anygpt-rl-training-{epoch:02d}--{step:02d}-{avg_ep_reward:.2f}",
-                    every_n_train_steps=self.settings.io_config.log_every_n_steps * 10,
+                    every_n_train_steps=self.settings.io_config.log_every_n_steps,
                 ),
             ],
             logger=self.logger,

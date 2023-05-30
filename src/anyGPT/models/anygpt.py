@@ -113,17 +113,18 @@ class AnyGPT(nn.Module):
     @staticmethod
     def load_from_pretrained(
         checkpoint_path: str, fine_tune: bool = False
-    ) -> Tuple[nn.Module, AnyGPTSettings]:
+    ) -> Tuple[nn.Module, AnyGPTSettings, dict]:
         checkpoint = torch.load(checkpoint_path, map_location="cpu")
         config = checkpoint["model_config"]
         settings = checkpoint["settings"]
+        metatdata = checkpoint["metadata"]
         config.fine_tune = fine_tune
         model = AnyGPT(config)
         model.load_state_dict(checkpoint["model_state_dict"], strict=False)
         model.freeze_params(["adapter"])
         model.to(settings.torch_config.device)
 
-        return model, settings
+        return model, settings, metatdata
 
     @property
     def device(self):
