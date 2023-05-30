@@ -1,0 +1,12 @@
+folder: docs
+modules:
+  - name: anyGPT
+    file_name: settings-api-documentation.md
+    submodules:
+      - config.settings
+  - name: anyGPT
+    file_name: data-api-documentation.md
+    submodules:
+      - data.experience_dataset
+      - data.next_token_dataset
+      - data.prepare_data
