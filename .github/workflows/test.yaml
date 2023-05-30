@@ -10,7 +10,10 @@ jobs:
   lint:
     uses: ./.github/workflows/lint.yaml
   build-n-test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
     needs: lint
     steps:
       - uses: actions/checkout@v3
