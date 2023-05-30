@@ -6,6 +6,8 @@ import numpy as np
 import requests
 import tiktoken
 
+from sys import platform
+
 from anyGPT import RAW_DATADIR, DEFAULT_DATADIR
 from anyGPT.data.util import encode
 
@@ -51,8 +53,12 @@ def _download_data(name, url):
     _make_dir(RAW_DATADIR)
     input_file_path = os.path.join(RAW_DATADIR, f"{name}.txt")
     if not os.path.exists(input_file_path):
-        with open(input_file_path, "w") as f:
-            f.write(requests.get(url).text)
+        if platform == "win32":
+            with open(input_file_path, "w", encoding="utf-8") as f:
+                f.write(requests.get(url).text)
+        else:
+            with open(input_file_path, "w") as f:
+                f.write(requests.get(url).text)
 
 
 def _save_to_bin(name, train_ids, val_ids, test_ids, meta=None):
@@ -70,8 +76,12 @@ def _save_to_bin(name, train_ids, val_ids, test_ids, meta=None):
 
 def _tokenize_file_char(name):
     input_file_path = os.path.join(RAW_DATADIR, f"{name}.txt")
-    with open(input_file_path, "r") as f:
-        data = f.read()
+    if platform == "win32":
+        with open(input_file_path, "r", encoding="utf-8") as f:
+            data = f.read()
+    else:
+        with open(input_file_path, "r") as f:
+            data = f.read()
     chars = sorted(set(data))
     vocab_size = len(chars)
     str_to_int = {ch: i for i, ch in enumerate(chars)}
@@ -121,8 +131,12 @@ def _tokenize_data(data, bpe):
 
 def _tokenize_file(name, bpe):
     input_file_path = os.path.join(RAW_DATADIR, f"{name}.txt")
-    with open(input_file_path, "r") as f:
-        data = f.read()
+    if platform == "win32":
+        with open(input_file_path, "r", encoding="utf-8") as f:
+            data = f.read()
+    else:
+        with open(input_file_path, "r") as f:
+            data = f.read()
 
     train_ids, val_ids, test_ids = _tokenize_data(data, bpe)
 
