@@ -1,0 +1,47 @@
+model_config:
+  name: 'gpt-2-10M-char'
+  block_size: 256
+  dropout: 0.2
+  embedding_size: 384
+  num_heads: 6
+  num_layers: 6
+  bias: false
+  adapter_bottleneck_factor: 48
+
+io_config:
+  experiment_name: 'gpt-2'
+  dataset: 'shakespeare_karpathy'
+  log_every_n_steps: 10
+
+training_config:
+  learning_rate: 1.0e-3
+  swa_lrs: 1.0e-4
+  batch_size: 16
+  accumulate_gradients: 1
+  beta2: 0.99
+  min_lr: 1.0e-4
+  max_steps: 10000
+  val_check_interval: 250
+  limit_val_batches: 200
+  seed: null
+
+torch_config:
+  device: "cpu"
+  compile: false
+#  accelerator: "cpu"
+
+ppo_config:
+  checkpoint: "pretrained_models/pre-trained-30M.pt"
+  shared_actor_critic: true
+  learning_rate: 1.0e-4
+  beta: 0.1
+  beta_kl: 0.2
+  epochs: 1000
+  batch_size: 8
+  buffer_size: 64
+  observation_size: 16
+  action_size: 16
+  env_kwargs:
+    label: "anger"
+    model_name: "j-hartmann/emotion-english-distilroberta-base"
+    dataset: "shakespeare_karpathy"
