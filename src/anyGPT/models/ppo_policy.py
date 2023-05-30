@@ -42,7 +42,7 @@ class PPOPolicy(nn.Module):
         x: torch.Tensor,
         max_new_tokens: int,
         block_size: int,
-        device: str,
+        device: torch.device,
         use_reference: bool = True,
         temperature: float = 1.0,
         top_k: int = None,

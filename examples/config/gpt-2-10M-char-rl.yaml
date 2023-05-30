@@ -8,7 +8,6 @@ model_config:
   vocab_size: 65
   bias: false
   adapter_bottleneck_factor: 48
-  fine_tune: true # training with fine-tuning enabled to add adapters since we'll skip the SFT stage
 
 io_config:
   experiment_name: 'gpt-2-char'
@@ -33,7 +32,7 @@ torch_config:
 #  accelerator: "cpu"
 
 ppo_config:
-  checkpoint: "results/gpt-2-char-pretrain/version_0/checkpoints/last.pt"
+  checkpoint: "pretrained_models/pre-trained-10M-char.pt"
   shared_actor_critic: true
   learning_rate: 1.0e-4
   beta: 0.1

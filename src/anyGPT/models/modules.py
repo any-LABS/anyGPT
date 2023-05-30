@@ -169,7 +169,9 @@ class Adapter(nn.Module):
             bias=config.bias,
         )
 
+        self.ln = LayerNorm(config)
+
     def forward(self, x):
-        x = x + self.fn2(new_gelu(self.fn1(x)))
+        x = x + self.fn2(F.relu(self.fn1(self.ln(x))))
         # might need dropout here
         return x
