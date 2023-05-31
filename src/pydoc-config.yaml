@@ -10,3 +10,26 @@ modules:
       - data.experience_dataset
       - data.next_token_dataset
       - data.prepare_data
+  - name: anyGPT
+    file_name: environments-api-documentation.md
+    submodules:
+      - environments.sequence_classification_env
+  - name: anyGPT
+    file_name: inference-api-documentation.md
+    submodules:
+      - inference.runner
+  - name: anyGPT
+    file_name: models-api-documentation.md
+    submodules:
+      - models.anygpt
+      - models.anygpt_critic
+      - models.anygpt_lit
+      - models.anygpt_ppo_lit
+      - models.modules
+      - models.operators
+      - models.ppo_policy
+  - name: anyGPT
+    file_name: training-api-documentation.md
+    submodules:
+      - training.model_checkpoint
+      - training.trainers

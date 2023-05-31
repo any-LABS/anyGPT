@@ -97,4 +97,6 @@ if __name__ == "__main__":
                 new_hash = hash_file(output_file_name)
                 ok &= old_hash == new_hash
 
+    if not ok:
+        print("Documentation has been updated. Please commit the updated docs.")
     sys.exit(0 if ok else 1)

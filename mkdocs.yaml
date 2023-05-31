@@ -6,9 +6,19 @@ site_author: Miguel Alonso Jr
 copyright: copyright © 2023 Miguel Alonso Jr.
 nav:
   - Home: index.md
+  - Getting Started:
+      - Installation: installation.md
+      - Data Preparation: data-prep.md
+      - Training: training.md
+      - Inference: inference.md
+      - Using the Microservice: microservice.md
   - API:
       - Settings: settings-api-documentation.md
       - Data: data-api-documentation.md
+      - Environments: environments-api-documentation.md
+      - Inference: inference-api-documentation.md
+      - Models: models-api-documentation.md
+      - Training: training-api-documentation.md
 theme:
   name: material
   features:
