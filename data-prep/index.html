@@ -13,17 +13,17 @@
       
       
       
-        <link rel="prev" href="../environments-api-documentation/">
+        <link rel="prev" href="../installation/">
       
       
-        <link rel="next" href="../models-api-documentation/">
+        <link rel="next" href="../training/">
       
       <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.9">
     
     
       
-        <title>Inference - anyGPT</title>
+        <title>Data Preparation - anyGPT</title>
       
     
     
@@ -65,7 +65,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#table-of-contents" class="md-skip">
+        <a href="#data-preparation" class="md-skip">
           Skip to content
         </a>
       
@@ -100,7 +100,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Inference
+              Data Preparation
             
           </span>
         </div>
@@ -223,14 +223,16 @@
 
   
   
+    
+  
   
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
       
       
-      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
       
       
       
@@ -239,7 +241,7 @@
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_2">
           <span class="md-nav__icon md-icon"></span>
           Getting Started
@@ -264,11 +266,21 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../data-prep/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Data Preparation
       </a>
+      
     </li>
   
 
@@ -328,16 +340,14 @@
 
   
   
-    
-  
   
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
       
       
       
-      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
       
       
       
@@ -346,7 +356,7 @@
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_3">
           <span class="md-nav__icon md-icon"></span>
           API
@@ -399,21 +409,11 @@
               
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../inference-api-documentation/" class="md-nav__link">
         Inference
       </a>
-      
     </li>
   
 
@@ -489,12 +489,9 @@
   
 
 
-<h1 id="table-of-contents">Table of Contents</h1>
-<ul>
-<li><a href="#anyGPT.inference.runner">anyGPT.inference.runner</a></li>
-</ul>
-<p><a id="anyGPT.inference.runner"></a></p>
-<h1 id="anygptinferencerunner">anyGPT.inference.runner</h1>
+<h1 id="data-preparation">Data Preparation</h1>
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>$<span class="w"> </span>anygpt-prepare-data<span class="w"> </span>-n<span class="w"> </span>shakespeare_complete<span class="w"> </span>-u<span class="w"> </span>https://www.gutenberg.org/cache/epub/100/pg100.txt
+</span></code></pre></div>
 
 
 

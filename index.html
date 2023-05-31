@@ -14,7 +14,7 @@
       
       
       
-        <link rel="next" href="settings-api-documentation/">
+        <link rel="next" href="installation/">
       
       <link rel="icon" href="assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.9">
@@ -437,12 +437,117 @@
       
       
         <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
-          API
+          Getting Started
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Getting Started
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="installation/" class="md-nav__link">
+        Installation
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="data-prep/" class="md-nav__link">
+        Data Preparation
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="training/" class="md-nav__link">
+        Training
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="inference/" class="md-nav__link">
+        Inference
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="microservice/" class="md-nav__link">
+        Using the Microservice
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          API
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_3">
           <span class="md-nav__icon md-icon"></span>
           API
         </label>
@@ -805,9 +910,9 @@ save trained checkpoints, reuse datasets between runs and more.</p>
 <h4 id="non-interactive-docker">Non interactive Docker</h4>
 <p>The above documentation explains how to run a Docker container with an interactive session of anyGPT. You can
 also run anyGPT commands to completion using Docker by overriding the entrypoint</p>
-<div class="language-shell highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>$<span class="w"> </span>docker<span class="w"> </span>run<span class="w"> </span>--gpus<span class="o">=</span>all<span class="w"> </span>-v<span class="w"> </span>/path/to/your/data:/data<span class="w"> </span>--entrypoint<span class="w"> </span>anygpt-run<span class="w"> </span>-it<span class="w"> </span>anygpt<span class="w"> </span>/data/test.ckpt<span class="w"> </span><span class="s2">&quot;hello world&quot;</span>
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>$<span class="w"> </span>docker<span class="w"> </span>run<span class="w"> </span>--gpus<span class="o">=</span>all<span class="w"> </span>-v<span class="w"> </span>/path/to/your/data:/data<span class="w"> </span>--entrypoint<span class="w"> </span>anygpt-run<span class="w"> </span>-it<span class="w"> </span>anygpt<span class="w"> </span>/data/test.pt<span class="w"> </span><span class="s2">&quot;hello world&quot;</span>
 </span></code></pre></div>
-<p>The above command runs <code>anygpt-run</code> with the parameters <code>/data/test.ckpt "hello world"</code></p>
+<p>The above command runs <code>anygpt-run</code> with the parameters <code>/data/test.pt "hello world"</code></p>
 <h3 id="dependencies">Dependencies</h3>
 <ul>
 <li>torch &gt;= 2.0.0</li>
@@ -882,7 +987,7 @@ also run anyGPT commands to completion using Docker by overriding the entrypoint
 <div class="language-shell highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>$<span class="w"> </span>anygpt-train<span class="w"> </span>gpt-2-30M.yaml
 </span></code></pre></div>
 <h3 id="inference">Inference</h3>
-<div class="language-shell highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>$<span class="w"> </span>anygpt-run<span class="w"> </span>results/gpt-1/version_0/checkpoints/epoch<span class="o">=</span><span class="m">0</span>-step<span class="o">=</span><span class="m">5000</span>.ckpt<span class="w"> </span><span class="se">\</span>
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>$<span class="w"> </span>anygpt-run<span class="w"> </span>results/gpt-2-pretrain/version_0/checkpoints/last.pt<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="s2">&quot;JAQUES.</span>
 </span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="s2">All the world’s a stage,</span>
 </span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="s2">And all the men and women merely players;</span>
@@ -909,13 +1014,13 @@ To launch the microservice, use the <code>anygpt-serve</code> entrypoint.</p>
 </span><span id="__span-9-14"><a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a><span class="w">                        </span>uvicorn<span class="w"> </span>log<span class="w"> </span>level<span class="w"> </span><span class="o">(</span>default:<span class="w"> </span>info<span class="o">)</span>
 </span></code></pre></div>
 <h4 id="example">Example</h4>
-<div class="language-shell highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>$<span class="w"> </span>anygpt-serve<span class="w"> </span>results/gpt-1/version_0/checkpoints/epoch<span class="o">=</span><span class="m">0</span>-step<span class="o">=</span><span class="m">5000</span>.ckpt<span class="w"> </span>--port<span class="w"> </span><span class="m">5000</span><span class="w"> </span>--log-level<span class="w"> </span>info
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>$<span class="w"> </span>anygpt-serve<span class="w"> </span>results/gpt-2-pretrain/version_0/checkpoints/last.pt<span class="w"> </span>--port<span class="w"> </span><span class="m">5000</span><span class="w"> </span>--log-level<span class="w"> </span>info
 </span></code></pre></div>
 <h4 id="sending-requests">Sending Requests</h4>
 <p><code>anygpt-serve</code> uses <a href="https://fastapi.tiangolo.com/lo/#interactive-api-docs">FastAPI</a> to serve the microservice.
 To see the available microservice api go to the  <code>/docs</code> endpoint in your browser once the microservice is started</p>
 <h4 id="spinning-up-microservice-in-docker">Spinning up Microservice in Docker</h4>
-<div class="language-shell highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>$<span class="w"> </span>docker<span class="w"> </span>run<span class="w"> </span>--gpus<span class="o">=</span>all<span class="w"> </span>-v<span class="w"> </span>/path/to/your/data:/data<span class="w"> </span>-p<span class="w"> </span><span class="m">5000</span>:5000<span class="w"> </span>--entrypoint<span class="w"> </span>anygpt-serve<span class="w"> </span>-it<span class="w"> </span>anygpt<span class="w"> </span>/data/test.ckpt<span class="w"> </span>--port<span class="w"> </span><span class="m">5000</span><span class="w"> </span>--host<span class="w"> </span><span class="m">0</span>.0.0.0<span class="w"> </span>--log-level<span class="w"> </span>info
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>$<span class="w"> </span>docker<span class="w"> </span>run<span class="w"> </span>--gpus<span class="o">=</span>all<span class="w"> </span>-v<span class="w"> </span>/path/to/your/data:/data<span class="w"> </span>-p<span class="w"> </span><span class="m">5000</span>:5000<span class="w"> </span>--entrypoint<span class="w"> </span>anygpt-serve<span class="w"> </span>-it<span class="w"> </span>anygpt<span class="w"> </span>/data/test.pt<span class="w"> </span>--port<span class="w"> </span><span class="m">5000</span><span class="w"> </span>--host<span class="w"> </span><span class="m">0</span>.0.0.0<span class="w"> </span>--log-level<span class="w"> </span>info
 </span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>INFO:<span class="w">     </span>Started<span class="w"> </span>server<span class="w"> </span>process<span class="w"> </span><span class="o">[</span><span class="m">1</span><span class="o">]</span>
 </span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>INFO:<span class="w">     </span>Waiting<span class="w"> </span><span class="k">for</span><span class="w"> </span>application<span class="w"> </span>startup.
 </span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>INFO:<span class="w">     </span>Application<span class="w"> </span>startup<span class="w"> </span>complete.
