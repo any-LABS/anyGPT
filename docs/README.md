@@ -1,6 +1,12 @@
 # anyGPT
 
-[![Build and Test](https://github.com/miguelalonsojr/anyGPT/actions/workflows/test.yaml/badge.svg)](https://github.com/miguelalonsojr/anyGPT/actions/workflows/test.yaml)
+[![any-LABS - anyGPT](https://img.shields.io/static/v1?label=any-LABS&message=anyGPT&color=blue&logo=github)](https://github.com/any-LABS/anyGPT "Go to GitHub repo")
+[![stars - anyGPT](https://img.shields.io/github/stars/any-LABS/anyGPT?style=social)](https://github.com/any-LABS/anyGPT)
+[![forks - anyGPT](https://img.shields.io/github/forks/any-LABS/anyGPT?style=social)](https://github.com/any-LABS/anyGPT)
+[![CI](https://github.com/any-LABS/anyGPT/workflows/CI/badge.svg)](https://github.com/any-LABS/anyGPT/actions?query=workflow:"CI")
+[![GitHub tag](https://img.shields.io/github/tag/any-LABS/anyGPT?include_prereleases=&sort=semver&color=blue)](https://github.com/any-LABS/anyGPT/releases/)
+[![License](https://img.shields.io/badge/License-MIT-blue)](#license)
+[![issues - anyGPT](https://img.shields.io/github/issues/any-LABS/anyGPT)](https://github.com/any-LABS/anyGPT/issues)
 
 anyGPT is a general purpose library for training any type of GPT model. Support for gpt-1, gpt-2, and gpt-3 models.
 Inspired by [nanoGPT](https://github.com/karpathy/nanoGPT) by [Andrej Karpathy](https://github.com/karpathy), the goal
@@ -65,10 +71,10 @@ The above documentation explains how to run a Docker container with an interacti
 also run anyGPT commands to completion using Docker by overriding the entrypoint
 
 ```shell
-$ docker run --gpus=all -v /path/to/your/data:/data --entrypoint anygpt-run -it anygpt /data/test.ckpt "hello world"
+$ docker run --gpus=all -v /path/to/your/data:/data --entrypoint anygpt-run -it anygpt /data/test.pt "hello world"
 ```
 
-The above command runs `anygpt-run` with the parameters `/data/test.ckpt "hello world"`
+The above command runs `anygpt-run` with the parameters `/data/test.pt "hello world"`
 
 ### Dependencies
 
@@ -151,7 +157,7 @@ $ anygpt-train gpt-2-30M.yaml
 ### Inference
 
 ```shell
-$ anygpt-run results/gpt-1/version_0/checkpoints/epoch=0-step=5000.ckpt \
+$ anygpt-run results/gpt-2-pretrain/version_0/checkpoints/last.pt \
 "JAQUES.
 All the world’s a stage,
 And all the men and women merely players;
@@ -186,7 +192,7 @@ options:
 #### Example
 
 ```shell
-$ anygpt-serve results/gpt-1/version_0/checkpoints/epoch=0-step=5000.ckpt --port 5000 --log-level info
+$ anygpt-serve results/gpt-2-pretrain/version_0/checkpoints/last.pt --port 5000 --log-level info
 ```
 
 #### Sending Requests
@@ -197,7 +203,7 @@ To see the available microservice api go to the  `/docs` endpoint in your browse
 #### Spinning up Microservice in Docker
 
 ```shell
-$ docker run --gpus=all -v /path/to/your/data:/data -p 5000:5000 --entrypoint anygpt-serve -it anygpt /data/test.ckpt --port 5000 --host 0.0.0.0 --log-level info
+$ docker run --gpus=all -v /path/to/your/data:/data -p 5000:5000 --entrypoint anygpt-serve -it anygpt /data/test.pt --port 5000 --host 0.0.0.0 --log-level info
 INFO:     Started server process [1]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
@@ -207,7 +213,7 @@ INFO:     Uvicorn running on http://127.0.0.1:5000 (Press CTRL+C to quit)
 
 ## Documentation
 
-Coming soon!
+[![view - Documentation](https://img.shields.io/badge/view-Documentation-blue?style=for-the-badge)](https://any-labs.github.io/anyGPT/ "Go to project documentation")
 
 ## Limitations
 
@@ -219,6 +225,8 @@ The goal of this project is to enable organizations, both large and small, to tr
 Large Language Models. I believe the future is open-source, with people and organizations being able to
 train from scratch or fine-tune models and deploy to production without relying on gatekeepers. So I'm releasing this
 under an [MIT license](../LICENSE) for the benefit of all and in the hope that the community will find it useful.
+
+Released under [MIT](/LICENSE) by [@any-LABS](https://github.com/any-LABS).
 
 [github_url]: https://github.com/miguelalonsojr/anyGPT/tree/main
 [example-configs]: https://github.com/miguelalonsojr/anyGPT/tree/main/examples/config "Example configuration files."

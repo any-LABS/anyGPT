@@ -1,3 +1,4 @@
+pretrained_models/pre-trained-30M.pt
 .idea
 lightning_logs/
 results/

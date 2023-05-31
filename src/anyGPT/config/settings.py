@@ -3,13 +3,25 @@ from typing import Union
 
 
 class SimpleConfig:
+    """
+    SimpleConfig - base class for config dataclass objects
+    """
+
     def __init__(self, **kwargs):
+        """
+        Initializes dataclass based on keys in the yaml dict.
+        :param kwargs: a dictionary sourced from a yaml config file.
+        """
         kwarg_keys = kwargs.keys()
         for key in self.__annotations__.keys():
             if key in kwarg_keys:
                 self.__dict__[key] = kwargs[key]
 
     def update(self, kwargs):
+        """
+        Updates the values in the dataclass.
+        :param kwargs: dictionary of key/value pairs to update.
+        """
         for key, value in kwargs.items():
             if hasattr(self, key):
                 setattr(self, key, value)
@@ -63,11 +75,21 @@ class IOConfig(SimpleConfig):
 
 @dataclass
 class TorchConfig(SimpleConfig):
+    """
+    Torch configuration.
+    """
+
     backend: str = "nccl"
+    """Specifies which backend to use. Default='nccl'. Currently disabled."""
     device: str = "cuda"
-    precision: str = "16-mixed"  # 32, 16-mixed, bf16-mixed, 64
+    """Specifies which device to use. Default=cuda. Options are 'cpu', 'cuda'"""
+    precision: str = "16-mixed"
+    """Specifies the precision used during training. Acceptable values are 32, 16-mixed,
+    bf16-mixed, or 64."""
     compile: bool = True
+    """Specifies whether to compile the model for training. Default=true"""
     accelerator: str = "auto"
+    """Specifies which accelerator to use. Default=auto."""
 
 
 @dataclass
