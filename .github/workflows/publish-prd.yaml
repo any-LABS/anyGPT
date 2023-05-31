@@ -5,7 +5,7 @@ on: [workflow_dispatch]
 jobs:
   lint:
     uses: ./.github/workflows/lint.yaml
-  build-test-publish-test:
+  build-test-publish-prod:
     runs-on: ubuntu-latest
     environment: prod
     needs: lint
@@ -16,4 +16,4 @@ jobs:
       - run: pytest
       - run: python -m build
       - run: twine check dist/*
-      - run: twine upload -r testpypi dist/* -u __token__ -p ${{ secrets.PYPIPROD }}
+      - run: twine upload -r pypi dist/* -u __token__ -p ${{ secrets.PYPIPROD }}
