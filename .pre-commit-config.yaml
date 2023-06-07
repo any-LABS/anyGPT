@@ -24,6 +24,6 @@ repos:
     -   id: generate-md-docs
         name: generate-md-docs
         language: python
-        entry: ./util/gen_md_docs.py --package_dir src
+        entry: python ./util/gen_md_docs.py --package_dir src
         pass_filenames: false
         additional_dependencies: [pyyaml, pydoc-markdown==4.8.0]

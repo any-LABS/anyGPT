@@ -5,6 +5,9 @@ import pickle
 import numpy as np
 import requests
 import tiktoken
+import validators
+import shutil
+
 
 from sys import platform
 
@@ -32,11 +35,12 @@ def _create_parser() -> argparse.ArgumentParser:
         help="The name of the dataset",
     )
     parser.add_argument(
-        "-u",
-        "--url",
-        dest="url",
+        "-i",
+        "--input",
+        dest="url_or_path",
         default="https://www.gutenberg.org/cache/epub/62/pg62.txt",
-        help="The URL of the dataset pointing to a plain text file.",
+        help="The input dataset. Can be either a valid URL pointing to a plaintext file or"
+        + "a valid local path pointing to a plaintext file.",
     )
     parser.add_argument(
         "-c",
@@ -49,16 +53,27 @@ def _create_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def _download_data(name, url):
+def _get_data(name, url_or_path):
     _make_dir(RAW_DATADIR)
     input_file_path = os.path.join(RAW_DATADIR, f"{name}.txt")
     if not os.path.exists(input_file_path):
-        if platform == "win32":
-            with open(input_file_path, "w", encoding="utf-8") as f:
-                f.write(requests.get(url).text)
+        if validators.url(url_or_path):
+            print(f"URL detected at {url_or_path}. Attempting to download data")
+            if platform == "win32":
+                with open(input_file_path, "w", encoding="utf-8") as f:
+                    f.write(requests.get(url_or_path).text)
+            else:
+                with open(input_file_path, "w") as f:
+                    f.write(requests.get(url_or_path).text)
+        elif os.path.exists(url_or_path):
+            print(f"Local path detected at {url_or_path}. Copying files")
+            shutil.copyfile(url_or_path, input_file_path)
         else:
-            with open(input_file_path, "w") as f:
-                f.write(requests.get(url).text)
+            raise ValueError(
+                f"Argument {url_or_path} must be a valid URL or a valid local file"
+            )
+    else:
+        raise ValueError(f"Dataset with {name} already exists.")
 
 
 def _save_to_bin(name, train_ids, val_ids, test_ids, meta=None):
@@ -147,9 +162,9 @@ def _tokenize_file(name, bpe):
     _save_to_bin(name, train_ids, val_ids, test_ids)
 
 
-def prepare_data(name: str, url: str, is_char: bool) -> None:
-    print(f"Preparing dataset '{name}' from url: {url}.")
-    _download_data(name, url)
+def prepare_data(name: str, url_or_path: str, is_char: bool) -> None:
+    print(f"Preparing dataset '{name}' from: {url_or_path}.")
+    _get_data(name, url_or_path)
     if is_char:
         _tokenize_file_char(name)
     else:
@@ -159,7 +174,7 @@ def prepare_data(name: str, url: str, is_char: bool) -> None:
 def main():
     parser = _create_parser()
     args = parser.parse_args()
-    prepare_data(args.name, args.url, args.is_char)
+    prepare_data(args.name, args.url_or_path, args.is_char)
 
 
 if __name__ == "__main__":
