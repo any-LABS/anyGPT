@@ -39,10 +39,10 @@ ppo_config:
   beta: 0.2
   beta_kl: 0.2
   epochs: 1000
-  batch_size: 8
-  buffer_size: 32
-  observation_size: 16
-  action_size: 16
+  batch_size: 16
+  buffer_size: 64
+  observation_size: 32
+  action_size: 32
   env_kwargs:
     label: "joy"
     model_name: "j-hartmann/emotion-english-distilroberta-base"

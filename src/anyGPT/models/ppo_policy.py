@@ -1,3 +1,4 @@
+from contextlib import nullcontext
 from typing import Tuple
 
 import torch
@@ -52,28 +53,31 @@ class PPOPolicy(nn.Module):
         log_probs_ref = torch.tensor([]).to(device)
         values = torch.tensor([]).to(device)
 
-        for _ in range(max_new_tokens):
-            x_cond = x if x.size(1) <= block_size else x[:, -block_size:]
-            logits, _ = self.actor(x_cond)
-            value_next, _ = self.critic(x_cond)
-            values = torch.cat((values, value_next), dim=1)
-            logits = logits[:, -1, :] / temperature
-            probs_next = F.softmax(logits, dim=-1)
-            x_next = torch.multinomial(probs_next, num_samples=1)
-            probs_x_next = torch.gather(probs_next, 1, x_next)
-            log_probs_x_next = torch.log(probs_x_next)
-            log_probs = torch.cat((log_probs, log_probs_x_next), dim=1)
-            probs = torch.cat((probs, probs_x_next), dim=1)
+        for i in range(max_new_tokens):
+            with torch.no_grad() if i < max_new_tokens - 1 else nullcontext():
+                x_cond = x if x.size(1) <= block_size else x[:, -block_size:]
+                logits, _ = self.actor(x_cond)
+                value_next, _ = self.critic(x_cond)
+                values = torch.cat((values, value_next), dim=1)
+                logits = logits[:, -1, :] / temperature
+                probs_next = F.softmax(logits, dim=-1)
+                x_next = torch.multinomial(probs_next, num_samples=1)
+                probs_x_next = torch.gather(probs_next, 1, x_next)
+                log_probs_x_next = torch.log(probs_x_next)
+                log_probs = torch.cat((log_probs, log_probs_x_next), dim=1)
+                probs = torch.cat((probs, probs_x_next), dim=1)
 
-            if use_reference:
-                logits_ref, _ = self.actor_ref(x_cond)
-                logits_ref = logits_ref[:, -1, :]
-                probs_ref_next = F.softmax(logits_ref, dim=-1)
-                probs_ref_x_next = torch.gather(probs_ref_next, 1, x_next)
-                log_probs_ref_x_next = torch.log(probs_ref_x_next)
-                log_probs_ref = torch.cat((log_probs_ref, log_probs_ref_x_next), dim=1)
+                if use_reference:
+                    logits_ref, _ = self.actor_ref(x_cond)
+                    logits_ref = logits_ref[:, -1, :]
+                    probs_ref_next = F.softmax(logits_ref, dim=-1)
+                    probs_ref_x_next = torch.gather(probs_ref_next, 1, x_next)
+                    log_probs_ref_x_next = torch.log(probs_ref_x_next)
+                    log_probs_ref = torch.cat(
+                        (log_probs_ref, log_probs_ref_x_next), dim=1
+                    )
 
-            x = torch.cat((x, x_next), dim=1)
+                x = torch.cat((x, x_next), dim=1)
 
         return (
             x[:, -max_new_tokens:],
