@@ -20,7 +20,9 @@ class AnyGPTPPOLit(pl.LightningModule):
         self.env = self._make_env()
         self.policy = PPOPolicy(settings)
         self.save_hyperparameters()
-        self.state = torch.tensor(self.env.reset()[0], dtype=torch.long)[None, ...]
+        self.state = torch.tensor(
+            self.env.reset()[0], dtype=torch.long, device=self.device
+        )[None, ...]
         self.batch_states: List[torch.Tensor] = []
         self.batch_actions: List[torch.Tensor] = []
         self.batch_adv: List[torch.Tensor] = []
@@ -167,9 +169,8 @@ class AnyGPTPPOLit(pl.LightningModule):
         return self._dataloader()
 
     def sample_trajectories(self):
+        self.state = self.state.to(self.device)
         for _ in range(self.settings.ppo_config.buffer_size):
-            self.state = self.state.to(device=self.device)
-
             with torch.no_grad():
                 action, _, log_probs, log_probs_ref, values = self.policy.generate(
                     self.state,
@@ -191,9 +192,9 @@ class AnyGPTPPOLit(pl.LightningModule):
             self.ep_values.append(values)
 
             if terminated:
-                self.state = torch.tensor(self.env.reset()[0], dtype=torch.long)[
-                    None, ...
-                ]
+                self.state = torch.tensor(
+                    self.env.reset()[0], dtype=torch.long, device=self.device
+                )[None, ...]
 
         self.batch_qvals = list(
             torch.unbind(

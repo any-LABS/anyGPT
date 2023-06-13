@@ -1,5 +1,5 @@
 model_config:
-  name: 'gpt-2-10M-char'
+  name: 'gpt-2-30M'
   block_size: 256
   dropout: 0.2
   embedding_size: 384
@@ -16,8 +16,8 @@ io_config:
 training_config:
   learning_rate: 1.0e-3
   swa_lrs: 1.0e-4
-  batch_size: 16
-  accumulate_gradients: 1
+  batch_size: 32
+  accumulate_gradients: 2
   beta2: 0.99
   min_lr: 1.0e-4
   max_steps: 10000
@@ -26,22 +26,24 @@ training_config:
   seed: null
 
 torch_config:
-  device: "cpu"
+  device: "cuda"
   compile: false
-#  accelerator: "cpu"
+#  backend: "gloo"
+#  devices: "0, 0"
+#  accelerator: "fractional_cuda"
 
 ppo_config:
   checkpoint: "pretrained_models/pre-trained-30M.pt"
   shared_actor_critic: true
-  learning_rate: 1.0e-4
-  beta: 0.1
+  learning_rate: 1.0e-5
+  beta: 0.2
   beta_kl: 0.2
   epochs: 1000
   batch_size: 8
-  buffer_size: 64
+  buffer_size: 32
   observation_size: 16
   action_size: 16
   env_kwargs:
-    label: "anger"
+    label: "joy"
     model_name: "j-hartmann/emotion-english-distilroberta-base"
     dataset: "shakespeare_karpathy"

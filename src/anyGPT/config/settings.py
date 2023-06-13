@@ -90,6 +90,9 @@ class TorchConfig(SimpleConfig):
     """Specifies whether to compile the model for training. Default=true"""
     accelerator: str = "auto"
     """Specifies which accelerator to use. Default=auto."""
+    devices: Union[str, int] = -1
+    """Specifies how many or which GPUs to use. If a string, specifies which devices.
+    If an int, specifies how many to use. Default=-1 (use all available devices). Only used for RLHF"""
 
 
 @dataclass

@@ -5,6 +5,7 @@ from lightning.pytorch.callbacks import (
     EarlyStopping,
 )
 from lightning.pytorch.loggers import TensorBoardLogger
+from lightning.pytorch.strategies import DDPStrategy
 from torch.utils.data import DataLoader
 
 from anyGPT.config.settings import AnyGPTSettings
@@ -12,6 +13,7 @@ from anyGPT.data.next_token_dataset import NextTokenDataset
 from anyGPT.models.anygpt_lit import AnyGPTLit
 from anyGPT.models.anygpt_ppo_lit import AnyGPTPPOLit
 from anyGPT.training.model_checkpoint import AnyGPTModelCheckpoint
+from anyGPT.accelerators.frac_cuda import FractionalCUDAAccelerator  # noqa
 
 
 class AnyGPTPreTrainer:
@@ -41,12 +43,14 @@ class AnyGPTPreTrainer:
             batch_size=self.settings.training_config.batch_size,
             num_workers=12,
             shuffle=True,
+            pin_memory=True,
         )
         self.val_dataloader = DataLoader(
             self.val_set,
             batch_size=self.settings.training_config.batch_size,
             num_workers=12,
             shuffle=True,
+            pin_memory=True,
         )
         self.logger = TensorBoardLogger(
             self.settings.io_config.out_dir,
@@ -63,6 +67,7 @@ class AnyGPTPreTrainer:
                 EarlyStopping("val_loss", mode="min"),
                 AnyGPTModelCheckpoint(
                     self.model.model,
+                    self.settings,
                     monitor="val_loss",
                     save_last=True,
                     save_top_k=2,
@@ -109,6 +114,11 @@ class AnyGPTPPOTrainer:
             self.settings.io_config.experiment_name + "-rlhf",
         )
 
+        ddp = DDPStrategy(
+            process_group_backend=self.settings.torch_config.backend,
+            find_unused_parameters=True,
+        )
+
         self.trainer = pl.Trainer(
             max_epochs=self.settings.ppo_config.epochs,
             accumulate_grad_batches=self.settings.training_config.accumulate_gradients,
@@ -118,6 +128,7 @@ class AnyGPTPPOTrainer:
                 ),
                 AnyGPTModelCheckpoint(
                     self.model.policy.actor,
+                    self.settings,
                     monitor="avg_ep_reward",
                     save_last=True,
                     save_top_k=2,
@@ -133,6 +144,8 @@ class AnyGPTPPOTrainer:
             log_every_n_steps=self.settings.io_config.log_every_n_steps,
             precision=self.settings.torch_config.precision,
             accelerator=self.settings.torch_config.accelerator,
+            devices=self.settings.torch_config.devices,
+            strategy=ddp,
         )
 
     def fit(self):
